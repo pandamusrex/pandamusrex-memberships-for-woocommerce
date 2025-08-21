@@ -44,6 +44,8 @@ class PandamusRex_Memberships {
     public function __construct() {
         add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
         add_action( 'save_post', array( $this, 'save_postdata' ) );
+        add_filter( 'manage_users_columns', array( $this, 'manage_users_columns' ) );
+        add_filter( 'manage_users_custom_column',  array( $this, 'manage_users_custom_column' ), 10, 3 );
     }
 
     function add_meta_box() {
@@ -100,6 +102,21 @@ class PandamusRex_Memberships {
         }
 
         return $product_id;
+    }
+
+    function manage_users_columns( $columns ) {
+        $columns[ 'membership' ] = __(' Membership Expires', 'pandamusrex-memberships' );
+        return $columns;
+    }
+
+    function manage_users_custom_column( $value, $column_name, $user_id ) {
+        // $user = get_userdata( $user_id );
+        if ( 'membership' == $column_name ) {
+            // TODO - check for a membership
+            return '-';
+        }
+
+        return $value;
     }
 }
 

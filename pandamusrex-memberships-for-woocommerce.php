@@ -25,6 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-db.php' );
+register_activation_hook( __FILE__, 'pandamusrex_memberships_create_tables' );
 
 class PandamusRex_Memberships {
     private static $instance;

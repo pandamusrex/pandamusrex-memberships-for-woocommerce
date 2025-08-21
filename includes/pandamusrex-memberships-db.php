@@ -132,5 +132,3 @@ function pandamusrex_memberships_create_tables() {
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' ); // Include dbDelta()
     dbDelta( $sql );
 }
-
-register_activation_hook( __FILE__, 'pandamusrex_memberships_create_tables' );

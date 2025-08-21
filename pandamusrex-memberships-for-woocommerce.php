@@ -52,7 +52,7 @@ class PandamusRex_Memberships {
 
         $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
 
-        echo '<input type="checbox" id="_pandamusrex_prod_incl_membership" name="_pandamusrex_prod_incl_membership" ' .
+        echo '<input type="checkbox" id="_pandamusrex_prod_incl_membership" name="_pandamusrex_prod_incl_membership" ' .
             ( $prod_incl_membership ? "checked" : "" ) .
             '/>';
         echo '<label for="_pandamusrex_prod_incl_membership">' .

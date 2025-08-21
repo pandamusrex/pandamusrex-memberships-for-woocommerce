@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class PandamusRex_Memberships_Db {
     public static function getTableName() {
+        global $wpdb;
         $table_name = $wpdb->prefix . 'pandamusrex_mbrship_prch';
     }
 
@@ -15,13 +16,13 @@ class PandamusRex_Memberships_Db {
         $charset_collate = $wpdb->get_charset_collate();
 
         $sql = "CREATE TABLE $table_name (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            user_id bigint(20) NOT NULL,
-            product_id bigint(20),
-            order_id bigint(20),
-            membership_starts datetime NOT NULL,
-            membership_ends datetime NOT NULL,
-            note varchar(255) NOT NULL,
+            id BIGINT(20) NOT NULL AUTO_INCREMENT,
+            user_id BIGINT(20) NOT NULL,
+            product_id BIGINT(20),
+            order_id BIGINT(20),
+            membership_starts DATETIME NOT NULL,
+            membership_ends DATETIME NOT NULL,
+            note VARCHAR(255) NOT NULL,
             PRIMARY KEY (id)
         ) $charset_collate;";
 

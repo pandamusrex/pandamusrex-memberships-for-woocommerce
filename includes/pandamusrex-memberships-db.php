@@ -113,6 +113,7 @@ class PandamusRex_Memberships_Db {
 }
 
 function pandamusrex_memberships_create_tables() {
+    error_log( 'in pandamusrex_memberships_create_tables' );
     global $wpdb;
     $table_name = PandamusRex_Memberships_Db::getTableName();
     $charset_collate = $wpdb->get_charset_collate();

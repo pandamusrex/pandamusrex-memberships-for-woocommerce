@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class PandamusRex_Memberships_Db {
     public static function getTableName() {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'pandamusrex_mbrship_prch';
+        return $wpdb->prefix . 'pandamusrex_mbrship_prch';
     }
 
     public static function create_tables() {

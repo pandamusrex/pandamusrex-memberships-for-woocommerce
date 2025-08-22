@@ -50,6 +50,7 @@ class PandamusRex_Memberships {
         add_action( 'woocommerce_account_memberships-tab_endpoint', [ $this, 'memberships_my_account_tab_content' ] );
         add_action( 'init', [ $this, 'add_memberships_tab_endpoint' ] );
         add_filter( 'query_vars', [ $this, 'add_custom_query_vars' ], 0 );
+        add_action( 'woocommerce_payment_complete', [ $this, 'woocommerce_payment_complete' ] );
     }
 
     public function add_meta_box() {
@@ -199,6 +200,45 @@ class PandamusRex_Memberships {
     public function add_custom_query_vars( $vars ) {
         $vars[] = 'memberships-tab';
         return $vars;
+    }
+
+    public function woocommerce_payment_complete( $order_id ) {
+        $order = wc_get_order( $order_id );
+
+        $user_id = $order->get_user_id();
+        if ( $user_id == 0 ) {
+            // Guest?!
+            return;
+        }
+
+        $found_product_id = 0;
+
+        foreach ( $order->get_items() as $item ) {
+            $product_id = $item->get_product_id();
+            $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
+            if ( $prod_incl_membership ) {
+                $found_product_id = $product_id;
+                break;
+            }
+        }
+
+        $wp_tz = wp_timezone_string();
+        $start_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
+        // Database expects YYYY-MM-DD
+        $membership_starts = $start_dt->format( "Y-m-d" );
+
+        $ends_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
+        $ends_dt->add( DateInterval::createFromDateString( '365 days' ) );
+        $membership_ends = $ends_dt->format( "Y-m-d" );
+
+        PandamusRex_Memberships_Db::addMembershipForUser(
+            $user_id,
+            $product_id,
+            $order_id,
+            $membership_starts,
+            $membership_ends,
+            ''
+        );
     }
 }
 

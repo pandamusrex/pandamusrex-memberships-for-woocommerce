@@ -203,14 +203,13 @@ class PandamusRex_Memberships {
     }
 
     public function woocommerce_order_status_changed( $order_id, $old_status, $new_status, $order ) {
-        wc_get_logger()->debug( 'XXXXXXXXX PANDA' );
-        wc_get_logger()->debug( "in woocommerce_order_status_changed, new_status = $new_status" );
+        // wc_get_logger()->debug( "in woocommerce_order_status_changed, new_status = $new_status" );
 
         if ( $new_status != "completed" ) {
             return;
         }
 
-        wc_get_logger()->debug( "Order ID: $order_id" );
+        // wc_get_logger()->debug( "Order ID: $order_id" );
 
         $user_id = $order->get_user_id();
         if ( $user_id == 0 ) {
@@ -218,14 +217,14 @@ class PandamusRex_Memberships {
             return;
         }
 
-        wc_get_logger()->debug( "User ID: $user_id" );
+        // wc_get_logger()->debug( "User ID: $user_id" );
 
         $found_product_id = 0;
 
         foreach ( $order->get_items() as $item ) {
             $product_id = $item->get_product_id();
 
-            wc_get_logger()->debug( "Examining product $product_id" );
+            // wc_get_logger()->debug( "Examining product $product_id" );
 
             $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
             if ( $prod_incl_membership ) {
@@ -234,20 +233,18 @@ class PandamusRex_Memberships {
             }
         }
 
-        wc_get_logger()->debug( "Product ID: $found_product_id" );
+        // wc_get_logger()->debug( "Product ID: $found_product_id" );
 
         $wp_tz = wp_timezone_string();
         $start_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
         // Database expects YYYY-MM-DD 00:00:00
         $membership_starts = $start_dt->format( "Y-m-d 00:00:00" );
-
-        wc_get_logger()->debug( "Starts: $membership_starts" );
+        // wc_get_logger()->debug( "Starts: $membership_starts" );
 
         $ends_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
         $ends_dt->add( DateInterval::createFromDateString( '365 days' ) );
         $membership_ends = $ends_dt->format( "Y-m-d 23:59:59" );
-
-        wc_get_logger()->debug( "Ends: $membership_ends" );
+        // wc_get_logger()->debug( "Ends: $membership_ends" );
 
         $result = PandamusRex_Memberships_Db::addMembershipForUser(
             $user_id,
@@ -258,10 +255,10 @@ class PandamusRex_Memberships {
             'Created automatically on payment complete'
         );
 
-        $inserted_id = $result[ 'id' ];
-        wc_get_logger()->debug( "Inserted ID: $inserted_id" );
-        $last_error = $result[ 'last_error' ];
-        wc_get_logger()->debug( "Last Error: $last_error" );
+        // $inserted_id = $result[ 'id' ];
+        // wc_get_logger()->debug( "Inserted ID: $inserted_id" );
+        // $last_error = $result[ 'last_error' ];
+        // wc_get_logger()->debug( "Last Error: $last_error" );
 
         // Remove old role
         // $user->remove_role( 'customer' );

@@ -50,7 +50,7 @@ class PandamusRex_Memberships {
         add_action( 'woocommerce_account_memberships-tab_endpoint', [ $this, 'memberships_my_account_tab_content' ] );
         add_action( 'init', [ $this, 'add_memberships_tab_endpoint' ] );
         add_filter( 'query_vars', [ $this, 'add_custom_query_vars' ], 0 );
-        add_action( 'woocommerce_order_status_completed', [ $this, 'woocommerce_order_status_completed' ] );
+        add_action( 'woocommerce_order_status_changed', [ $this, 'woocommerce_order_status_changed' ], 10, 4 );
     }
 
     public function add_meta_box() {
@@ -202,8 +202,12 @@ class PandamusRex_Memberships {
         return $vars;
     }
 
-    public function woocommerce_order_status_completed( $order_id ) {
-        $order = wc_get_order( $order_id );
+    public function woocommerce_order_status_changed( $order_id, $old_status, $new_status, $order ) {
+        error_log( "in woocommerce_order_status_changed, new_status = $new_status" );
+
+        if ( $new_status != "completed" ) {
+            return;
+        }
 
         error_log( "Order ID: $order_id" );
 
@@ -252,6 +256,12 @@ class PandamusRex_Memberships {
             $membership_ends,
             'Created automatically on payment complete'
         );
+
+        // Remove old role
+        // $user->remove_role( 'customer' );
+
+        // Add new role
+        // $user->add_role( 'member' );
     }
 }
 

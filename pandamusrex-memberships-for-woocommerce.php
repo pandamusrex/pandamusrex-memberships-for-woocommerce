@@ -50,7 +50,7 @@ class PandamusRex_Memberships {
         add_action( 'woocommerce_account_memberships-tab_endpoint', [ $this, 'memberships_my_account_tab_content' ] );
         add_action( 'init', [ $this, 'add_memberships_tab_endpoint' ] );
         add_filter( 'query_vars', [ $this, 'add_custom_query_vars' ], 0 );
-        add_action( 'woocommerce_payment_complete', [ $this, 'woocommerce_payment_complete' ] );
+        add_action( 'woocommerce_order_status_completed', [ $this, 'woocommerce_order_status_completed' ] );
     }
 
     public function add_meta_box() {
@@ -202,7 +202,7 @@ class PandamusRex_Memberships {
         return $vars;
     }
 
-    public function woocommerce_payment_complete( $order_id ) {
+    public function woocommerce_order_status_completed( $order_id ) {
         $order = wc_get_order( $order_id );
 
         error_log( "Order ID: $order_id" );

@@ -45,7 +45,7 @@ class PandamusRex_Memberships_Db {
     public static function getAllMembershipsByUser( $user_id ) {
         global $wpdb;
 
-        $sql = 'SELECT * FROM %s WHERE user_id = %s ORDER BY membership_ends DESC';
+        $sql = 'SELECT * FROM %i WHERE user_id = %s ORDER BY membership_ends DESC';
         $vars = [ self::getTableName(), $user_id ];
         $results = $wpdb->get_results( $wpdb->prepare( $sql, $vars ), ARRAY_A );
 

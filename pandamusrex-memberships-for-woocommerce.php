@@ -109,7 +109,7 @@ class PandamusRex_Memberships {
     }
 
     public function manage_users_columns( $columns ) {
-        $columns[ 'membership' ] = __(' Membership Expires', 'pandamusrex-memberships' );
+        $columns[ 'membership' ] = __( 'Membership Ended/Ends', 'pandamusrex-memberships' );
         return $columns;
     }
 

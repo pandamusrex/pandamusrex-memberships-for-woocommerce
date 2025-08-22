@@ -134,8 +134,8 @@ class PandamusRex_Memberships {
         $did_insert = false;
 
         foreach ( $items as $key => $value ) {
+            $new_array[ $key ] = $value;
             if ( $key == 'orders' ) {
-                $new_array[ $key ] = $value;
                 $new_array[ 'memberships-tab' ] = __( 'Membership', 'pandamusrex-memberships' );
                 $did_insert = true;
             }

@@ -110,10 +110,16 @@ class PandamusRex_Memberships {
     }
 
     function manage_users_custom_column( $value, $column_name, $user_id ) {
-        // $user = get_userdata( $user_id );
         if ( 'membership' == $column_name ) {
-            // TODO - check for a membership
-            return '-';
+            $most_recent = PandamusRex_Memberships_Db::getMostRecentMembershipForUser( $user_id );
+
+            $link_text = '';
+            if ( empty( $most_recent ) ) {
+                $link_text = esc_html__( 'N/A', 'pandamusrex-memberships' );
+            } else {
+                $link_text = esc_html( $most_recent[ 'membership_ends' ] );
+            }
+            return $link_text;
         }
 
         return $value;

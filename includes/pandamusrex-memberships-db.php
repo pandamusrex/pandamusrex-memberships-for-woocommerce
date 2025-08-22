@@ -30,12 +30,40 @@ class PandamusRex_Memberships_Db {
         dbDelta( $sql );
     }
 
+    protected static function convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd ) {
+        if ( strlen( $yyyy_mm_dd ) < 10 ) {
+            return $yyyy_mm_dd;
+        }
+
+        $mm = substr( $yyyy_mm_dd, 5, 2 );
+        $dd = substr( $yyyy_mm_dd, -2 );
+        $yy = substr( $yyyy_mm_dd, 0, 4 );
+
+        return $mm . '/' . $dd . '/' . $yy;
+    }
+
     public static function getAllMembershipsByUser( $user_id ) {
         global $wpdb;
 
         $sql = 'SELECT * FROM %s WHERE user_id = %s ORDER BY membership_ends DESC';
-        $vrs = [ self::getTableName(), $user_id ];
-        return $wpdb->get_results( $wpdb->prepare( $sql, $vars ), ARRAY_A );
+        $vars = [ self::getTableName(), $user_id ];
+        $results = $wpdb->get_results( $wpdb->prepare( $sql, $vars ), ARRAY_A );
+
+        // Keep just the date for start, end
+        // DB has YYYY-MM-DD HH:MM:SS.ffffff, so convert it to MM/DD/YYYY
+        foreach ( $results as &$result ) {
+            if ( array_key_exists( 'membership_starts' ) ) {
+                $yyyy_mm_dd = $result[ 'membership_starts' ];
+                $result[ 'membership_starts' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
+            }
+            if ( array_key_exists( 'membership_ends' ) ) {
+                $yyyy_mm_dd = $result[ 'membership_ends' ];
+                $result[ 'membership_ends' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
+            }
+        }
+        unset( $result );
+
+        return $results;
     }
 
     public static function getMostRecentMembershipForUser( $user_id ) {

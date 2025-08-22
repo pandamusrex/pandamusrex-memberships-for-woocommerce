@@ -211,7 +211,7 @@ class PandamusRex_Memberships {
             return;
         }
 
-        error_log( "Order ID: $order_id" );
+        wc_get_logger()->debug( "Order ID: $order_id" );
 
         $user_id = $order->get_user_id();
         if ( $user_id == 0 ) {
@@ -219,14 +219,14 @@ class PandamusRex_Memberships {
             return;
         }
 
-        error_log( "User ID: $user_id" );
+        wc_get_logger()->debug( "User ID: $user_id" );
 
         $found_product_id = 0;
 
         foreach ( $order->get_items() as $item ) {
             $product_id = $item->get_product_id();
 
-            error_log( "Examining product $product_id" );
+            wc_get_logger()->debug( "Examining product $product_id" );
 
             $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
             if ( $prod_incl_membership ) {
@@ -235,20 +235,20 @@ class PandamusRex_Memberships {
             }
         }
 
-        error_log( "Product ID: $found_product_id" );
+        wc_get_logger()->debug( "Product ID: $found_product_id" );
 
         $wp_tz = wp_timezone_string();
         $start_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
         // Database expects YYYY-MM-DD
         $membership_starts = $start_dt->format( "Y-m-d" );
 
-        error_log( "Starts: $membership_starts" );
+        wc_get_logger()->debug( "Starts: $membership_starts" );
 
         $ends_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
         $ends_dt->add( DateInterval::createFromDateString( '365 days' ) );
         $membership_ends = $ends_dt->format( "Y-m-d" );
 
-        error_log( "Ends: $membership_ends" );
+        wc_get_logger()->debug( "Ends: $membership_ends" );
 
         PandamusRex_Memberships_Db::addMembershipForUser(
             $user_id,

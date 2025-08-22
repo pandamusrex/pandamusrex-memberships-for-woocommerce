@@ -35,8 +35,10 @@ class PandamusRex_Memberships_Db {
             return $yyyy_mm_dd;
         }
 
+        // 0123456789
+        // YYYY-MM-DD
         $mm = substr( $yyyy_mm_dd, 5, 2 );
-        $dd = substr( $yyyy_mm_dd, -2 );
+        $dd = substr( $yyyy_mm_dd, 8, 2 );
         $yy = substr( $yyyy_mm_dd, 0, 4 );
 
         return $mm . '/' . $dd . '/' . $yy;

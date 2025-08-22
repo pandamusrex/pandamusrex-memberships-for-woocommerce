@@ -130,8 +130,23 @@ class PandamusRex_Memberships {
     }
 
     public function add_memberships_my_account_tab( $items ) {
-        $items['memberships-tab'] = __( 'Membership', 'pandamusrex-memberships' );
-        return $items;
+        $new_array = [];
+        $did_insert = false;
+
+        foreach ( $items as $key => $value ) {
+            if ( $key == 'orders' ) {
+                $new_array[ $key ] = $value;
+                $new_array[ 'memberships-tab' ] = __( 'Membership', 'pandamusrex-memberships' );
+                $did_insert = true;
+            }
+        }
+
+        // Just in case we never found Orders for some reason
+        if ( ! $did_insert ) {
+            $new_array[ 'memberships-tab' ] = __( 'Membership', 'pandamusrex-memberships' );
+        }
+
+        return $new_array;
     }
 
     public function memberships_my_account_tab_content() {
@@ -145,7 +160,7 @@ class PandamusRex_Memberships {
             echo esc_html__( 'You have no membership... yet!', 'pandamusrex-memberships' );
             echo '</p>';
         } else {
-            echo '<table>';
+            echo '<table class="shop_table">';
             echo '<tr>';
             echo '<th>';
             echo esc_html__( 'Order #', 'pandamusrex-memberships' );

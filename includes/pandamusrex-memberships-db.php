@@ -30,6 +30,8 @@ class PandamusRex_Memberships_Db {
         dbDelta( $sql );
     }
 
+    // Database stores as YYYY-MM-DD
+    // We want the GUI to show MM/DD/YYYY
     protected static function convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd ) {
         if ( strlen( $yyyy_mm_dd ) < 10 ) {
             return $yyyy_mm_dd;
@@ -106,6 +108,7 @@ class PandamusRex_Memberships_Db {
         );
 
         $data[ 'id' ] = $wpdb->insert_id;
+        $data[ 'last_error' ] = $wpdb->last_error;
 
         return $data;
     }

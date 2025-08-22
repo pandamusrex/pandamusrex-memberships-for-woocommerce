@@ -238,18 +238,18 @@ class PandamusRex_Memberships {
 
         $wp_tz = wp_timezone_string();
         $start_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
-        // Database expects YYYY-MM-DD
-        $membership_starts = $start_dt->format( "Y-m-d" );
+        // Database expects YYYY-MM-DD 00:00:00
+        $membership_starts = $start_dt->format( "Y-m-d 00:00:00" );
 
         wc_get_logger()->debug( "Starts: $membership_starts" );
 
         $ends_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
         $ends_dt->add( DateInterval::createFromDateString( '365 days' ) );
-        $membership_ends = $ends_dt->format( "Y-m-d" );
+        $membership_ends = $ends_dt->format( "Y-m-d 23:59:59" );
 
         wc_get_logger()->debug( "Ends: $membership_ends" );
 
-        PandamusRex_Memberships_Db::addMembershipForUser(
+        $result = PandamusRex_Memberships_Db::addMembershipForUser(
             $user_id,
             $found_product_id,
             $order_id,
@@ -257,6 +257,11 @@ class PandamusRex_Memberships {
             $membership_ends,
             'Created automatically on payment complete'
         );
+
+        $inserted_id = $result[ 'id' ];
+        wc_get_logger()->debug( "Inserted ID: $inserted_id" );
+        $last_error = $result[ 'last_error' ];
+        wc_get_logger()->debug( "Last Error: $last_error" );
 
         // Remove old role
         // $user->remove_role( 'customer' );

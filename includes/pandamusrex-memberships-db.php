@@ -122,7 +122,7 @@ class PandamusRex_Memberships_Db {
             'order_id' => $order_id,
             'membership_starts' => $starts,
             'membership_ends' => $ends,
-            'notes' => $notes
+            'note' => $note
         ];
 
         $wpdb->update(

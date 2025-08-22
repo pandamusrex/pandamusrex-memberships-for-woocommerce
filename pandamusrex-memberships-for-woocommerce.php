@@ -46,13 +46,18 @@ class PandamusRex_Memberships {
         add_action( 'save_post', array( $this, 'save_postdata' ) );
         add_filter( 'manage_users_columns', array( $this, 'manage_users_columns' ) );
         add_filter( 'manage_users_custom_column',  array( $this, 'manage_users_custom_column' ), 10, 3 );
+
+        add_filter( 'woocommerce_account_menu_items', [ $this, 'add_custom_my_account_tab' ] );
+        add_action( 'woocommerce_account_my-custom-tab_endpoint', [ $this, 'my_custom_my_account_tab_content' ] );
+        add_action( 'init', [ $this, 'add_custom_endpoint' ] );
+        add_filter( 'query_vars', [ $this, 'add_custom_query_vars', 0 ] );
     }
 
-    function add_meta_box() {
+    public function add_meta_box() {
         add_meta_box( 'pandamusrex_memberships_sectionid', __( 'Memberships', 'pandamusrex-memberships' ), array( $this, 'meta_box' ), 'product', 'side', 'high' );
     }
 
-    function meta_box( $product ) {
+    public function meta_box( $product ) {
         echo '<input type="hidden" name="pandamusrex_memberships_nonce" id="pandamusrex_memberships_nonce" value="' . esc_attr( wp_create_nonce( 'pandamusrex_memberships-' . $product->ID ) ) . '" />';
 
         $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
@@ -65,7 +70,7 @@ class PandamusRex_Memberships {
             '</label>';
     }
 
-    function save_postdata( $product_id ) {
+    public function save_postdata( $product_id ) {
         if ( ! isset ( $_POST['pandamusrex_memberships_nonce'] ) )
             return $product_id;
 
@@ -104,12 +109,12 @@ class PandamusRex_Memberships {
         return $product_id;
     }
 
-    function manage_users_columns( $columns ) {
+    public function manage_users_columns( $columns ) {
         $columns[ 'membership' ] = __(' Membership Expires', 'pandamusrex-memberships' );
         return $columns;
     }
 
-    function manage_users_custom_column( $value, $column_name, $user_id ) {
+    public function manage_users_custom_column( $value, $column_name, $user_id ) {
         if ( 'membership' == $column_name ) {
             $most_recent = PandamusRex_Memberships_Db::getMostRecentMembershipForUser( $user_id );
 
@@ -123,6 +128,25 @@ class PandamusRex_Memberships {
         }
 
         return $value;
+    }
+
+    public function add_custom_my_account_tab( $items ) {
+        $items['my-custom-tab'] = __( 'Membership', 'pandamusrex-memberships' );
+    return $items;
+    }
+
+    public function my_custom_my_account_tab_content() {
+        echo '<h2>Welcome to your custom tab!</h2><p>This is the content for your new tab.</p>';
+        // You can also add shortcodes here:
+        // echo do_shortcode( '[your_shortcode]' );
+    }
+
+    public function add_custom_endpoint() {
+        add_rewrite_endpoint( 'my-custom-tab', EP_ROOT | EP_PAGES );
+    }
+    public function add_custom_query_vars( $vars ) {
+        $vars[] = 'my-custom-tab';
+        return $vars;
     }
 }
 

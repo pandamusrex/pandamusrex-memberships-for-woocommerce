@@ -52,11 +52,11 @@ class PandamusRex_Memberships_Db {
         // Keep just the date for start, end
         // DB has YYYY-MM-DD HH:MM:SS.ffffff, so convert it to MM/DD/YYYY
         foreach ( $results as &$result ) {
-            if ( array_key_exists( 'membership_starts' ) ) {
+            if ( array_key_exists( 'membership_starts', $result ) ) {
                 $yyyy_mm_dd = $result[ 'membership_starts' ];
                 $result[ 'membership_starts' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
             }
-            if ( array_key_exists( 'membership_ends' ) ) {
+            if ( array_key_exists( 'membership_ends', $result ) ) {
                 $yyyy_mm_dd = $result[ 'membership_ends' ];
                 $result[ 'membership_ends' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
             }

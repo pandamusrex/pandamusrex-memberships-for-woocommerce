@@ -42,15 +42,14 @@ class PandamusRex_Memberships {
     public function __wakeup() {}
 
     public function __construct() {
-        add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
-        add_action( 'save_post', array( $this, 'save_postdata' ) );
-        add_filter( 'manage_users_columns', array( $this, 'manage_users_columns' ) );
-        add_filter( 'manage_users_custom_column',  array( $this, 'manage_users_custom_column' ), 10, 3 );
-
+        add_action( 'add_meta_boxes', [ $this, 'add_meta_box' ] );
+        add_action( 'save_post', [ $this, 'save_postdata' ] );
+        add_filter( 'manage_users_columns', [ $this, 'manage_users_columns' ] );
+        add_filter( 'manage_users_custom_column',  [ $this, 'manage_users_custom_column' ], 10, 3 );
         add_filter( 'woocommerce_account_menu_items', [ $this, 'add_custom_my_account_tab' ] );
         add_action( 'woocommerce_account_my-custom-tab_endpoint', [ $this, 'my_custom_my_account_tab_content' ] );
         add_action( 'init', [ $this, 'add_custom_endpoint' ] );
-        add_filter( 'query_vars', [ $this, 'add_custom_query_vars', 0 ] );
+        add_filter( 'query_vars', [ $this, 'add_custom_query_vars' ], 0 );
     }
 
     public function add_meta_box() {

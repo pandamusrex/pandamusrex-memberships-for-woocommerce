@@ -205,6 +205,8 @@ class PandamusRex_Memberships {
     public function woocommerce_order_status_changed( $order_id, $old_status, $new_status, $order ) {
         error_log( "in woocommerce_order_status_changed, new_status = $new_status" );
 
+        wc_get_logger()->debug( 'XXXXXXXXX PANDA' );
+
         if ( $new_status != "completed" ) {
             return;
         }

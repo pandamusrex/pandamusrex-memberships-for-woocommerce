@@ -47,7 +47,7 @@ class PandamusRex_Memberships {
         add_filter( 'manage_users_columns', [ $this, 'manage_users_columns' ] );
         add_filter( 'manage_users_custom_column',  [ $this, 'manage_users_custom_column' ], 10, 3 );
         add_filter( 'woocommerce_account_menu_items', [ $this, 'add_memberships_my_account_tab' ] );
-        add_action( 'woocommerce_account_my-custom-tab_endpoint', [ $this, 'memberships_my_account_tab_content' ] );
+        add_action( 'woocommerce_account_memberships-tab_endpoint', [ $this, 'memberships_my_account_tab_content' ] );
         add_action( 'init', [ $this, 'add_memberships_tab_endpoint' ] );
         add_filter( 'query_vars', [ $this, 'add_custom_query_vars' ], 0 );
     }

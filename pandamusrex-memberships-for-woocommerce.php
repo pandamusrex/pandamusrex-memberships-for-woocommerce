@@ -316,7 +316,7 @@ class PandamusRex_Memberships {
 
                     // pandamus_members_{product_id}_recipient_email_2
                     $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
-                    $label = $product_name . " - Ticket $index Recipient Email";
+                    $label = $product_name . " - Membership $index Recipient Email";
                     woocommerce_form_field( $custom_field_name, array(
                         'type'        => 'email',
                         'required'    => true,

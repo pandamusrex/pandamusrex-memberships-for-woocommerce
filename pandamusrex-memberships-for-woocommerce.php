@@ -24,6 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-user-helper.php' );
 require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-db.php' );
 register_activation_hook( __FILE__, [ 'PandamusRex_Memberships_Db', 'create_tables' ] );
 
@@ -51,6 +52,8 @@ class PandamusRex_Memberships {
         add_action( 'init', [ $this, 'add_memberships_tab_endpoint' ] );
         add_filter( 'query_vars', [ $this, 'add_custom_query_vars' ], 0 );
         add_action( 'woocommerce_order_status_changed', [ $this, 'woocommerce_order_status_changed' ], 10, 4 );
+
+        add_action( 'woocommerce_before_order_notes', [ $this, 'custom_checkout_fields' ] );
     }
 
     public function add_meta_box() {
@@ -211,9 +214,13 @@ class PandamusRex_Memberships {
 
         // wc_get_logger()->debug( "Order ID: $order_id" );
 
-        $user_id = $order->get_user_id();
-        if ( $user_id == 0 ) {
-            // Guest?!
+        $buyer_user_id = $order->get_user_id();
+        if ( $buyer_user_id == 0 ) {
+            if ( function_exists( 'wc_get_logger' ) ) {
+                wc_get_logger()->debug( "Unexpectedly got guest buyer in payment complete for order $order_id" );
+            } else {
+                error_log( "Unexpectedly got guest buyer in payment complete for order $order_id" );
+            }
             return;
         }
 
@@ -223,48 +230,105 @@ class PandamusRex_Memberships {
 
         foreach ( $order->get_items() as $item ) {
             $product_id = $item->get_product_id();
-
             // wc_get_logger()->debug( "Examining product $product_id" );
 
             $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
             if ( $prod_incl_membership ) {
-                $found_product_id = $product_id;
-                break;
+                $quantity = $item->get_quantity();
+
+                // "First" item always goes to buyer
+                // Second or higher item (if present) goes to emails provided during checkout
+                // _pandamus_members_{product_id}_recipient_email_{2..3..4}
+
+                // First, the buyer
+                $result = PandamusRex_Memberships_Db::addMembershipForUserThatStartsNow(
+                    $buyer_user_id,
+                    $product_id,
+                    $order_id,
+                    'Created for buyer automatically on payment complete'
+                );
+
+                // Now, anyone else
+                // e.g. if quantity = 3
+                // look in order meta for
+                // _pandamus_members_{product_id}_recipient_email_2
+                // _pandamus_members_{product_id}_recipient_email_3
+                for ( $index = 2; $index <= $quantity; $index++ ) {
+                    $meta_key = '_pandamus_members_' . $product_id . '_recipient_email_' . $index;
+                    // Find or create the user based on the order meta
+                    $user_id = -1;
+                    $recipient_email = get_post_meta( $order_id, $meta_key, false );
+                    if ( is_email( $recipient_email ) ) {
+                        $user_id = PandamusRex_Memberships_User_Helper::find_or_create_user( $recipient_email );
+                    }
+                    $result = PandamusRex_Memberships_Db::addMembershipForUserThatStartsNow(
+                        $user_id,
+                        $product_id,
+                        $order_id,
+                        'Created for recipient automatically on payment complete'
+                    );
+                }
+
+            }
+        }
+    }
+
+    public function custom_checkout_fields( $checkout ) {
+        $cart = WC()->cart->get_cart();
+
+        // First, see if we have any membership products with quantity > 1
+        // before we output anything
+        $show_div = false;
+        foreach ( $cart as $cart_item_key => $cart_item ) {
+            $product = apply_filters(
+                'woocommerce_cart_item_product',
+                $cart_item['data'],
+                $cart_item,
+                $cart_item_key
+            );
+            if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
+                $show_div = true;
             }
         }
 
-        // wc_get_logger()->debug( "Product ID: $found_product_id" );
+        if ( ! $show_div ) {
+            return;
+        }
 
-        $wp_tz = wp_timezone_string();
-        $start_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
-        // Database expects YYYY-MM-DD 00:00:00
-        $membership_starts = $start_dt->format( "Y-m-d 00:00:00" );
-        // wc_get_logger()->debug( "Starts: $membership_starts" );
+        echo '<div id="pandamusrex_memberships_recipients_fields">';
+        echo '<h3>';
+        echo esc_html__(
+            'You have multiple tickets in your cart. Please provide an email address for each recipient besides yourself',
+            'pandamusrex-memberships');
+        echo '</h3>';
 
-        $ends_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
-        $ends_dt->add( DateInterval::createFromDateString( '365 days' ) );
-        $membership_ends = $ends_dt->format( "Y-m-d 23:59:59" );
-        // wc_get_logger()->debug( "Ends: $membership_ends" );
+        foreach ( $cart as $cart_item_key => $cart_item ) {
+            $product = apply_filters(
+                'woocommerce_cart_item_product',
+                $cart_item['data'],
+                $cart_item,
+                $cart_item_key
+            );
+            if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
+                for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
+                    $product_id = $product->get_id();
+                    $product_name = $product->get_name();
 
-        $result = PandamusRex_Memberships_Db::addMembershipForUser(
-            $user_id,
-            $found_product_id,
-            $order_id,
-            $membership_starts,
-            $membership_ends,
-            'Created automatically on payment complete'
-        );
+                    // pandamus_members_{product_id}_recipient_email_2
+                    $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
+                    $label = $product_name . " - Ticket $index Recipient Email";
+                    woocommerce_form_field( $custom_field_name, array(
+                        'type'        => 'email',
+                        'required'    => true,
+                        'class'       => array('pandamusrex_membership_checkout_recipient form-row-wide'),
+                        'label'       => $label,
+                        'placeholder' => __( '' ),
+                    ), $checkout->get_value( $custom_field_name ) );
+                }
+            }
+        }
 
-        // $inserted_id = $result[ 'id' ];
-        // wc_get_logger()->debug( "Inserted ID: $inserted_id" );
-        // $last_error = $result[ 'last_error' ];
-        // wc_get_logger()->debug( "Last Error: $last_error" );
-
-        // Remove old role
-        // $user->remove_role( 'customer' );
-
-        // Add new role
-        // $user->add_role( 'member' );
+        echo '</div>';
     }
 }
 

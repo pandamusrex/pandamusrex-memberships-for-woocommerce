@@ -113,6 +113,28 @@ class PandamusRex_Memberships_Db {
         return $data;
     }
 
+    public static function addMembershipForUserThatStartsNow( $user_id, $product_id, $order_id, $note ) {
+        $wp_tz = wp_timezone_string();
+        $start_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
+        // Database expects YYYY-MM-DD 00:00:00
+        $membership_starts = $start_dt->format( "Y-m-d 00:00:00" );
+        // wc_get_logger()->debug( "Starts: $membership_starts" );
+
+        $ends_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
+        $ends_dt->add( DateInterval::createFromDateString( '365 days' ) );
+        $membership_ends = $ends_dt->format( "Y-m-d 23:59:59" );
+        // wc_get_logger()->debug( "Ends: $membership_ends" );
+
+        $result = self::addMembershipForUser(
+            $user_id,
+            $product_id,
+            $order_id,
+            $membership_starts,
+            $membership_ends,
+            $note
+        );
+    }
+
     public static function updateMembershipForUser( $membership_id, $user_id, $product_id, $order_id, $starts, $ends, $note ) {
         global $wpdb;
 

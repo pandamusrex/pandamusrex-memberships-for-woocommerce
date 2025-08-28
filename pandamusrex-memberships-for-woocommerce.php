@@ -298,7 +298,7 @@ class PandamusRex_Memberships {
         echo '<div id="pandamusrex_memberships_recipients_fields">';
         echo '<h3>';
         echo esc_html__(
-            'You have multiple tickets in your cart. Please provide an email address for each recipient besides yourself',
+            'You have multiple memberships in your cart. Please provide an email address for each recipient besides yourself',
             'pandamusrex-memberships');
         echo '</h3>';
 

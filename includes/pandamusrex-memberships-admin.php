@@ -53,16 +53,17 @@ class PandamusRex_Memberships_Admin {
         echo '</a>';
         echo '<hr class="wp-header-end">';
 
+        echo '<p>&nbsp;</p>';
+
         echo '<table class="wp-list-table widefat fixed striped table-view-list">';
         echo '<thead>';
         echo '<tr>';
-        echo '<th scope="col" class="manage-column">ID</th>';
-        echo '<th scope="col" id="membership_id" class="manage-column">User</th>';
-        echo '<th scope="col" id="membership_id" class="manage-column">Product</th>';
-        echo '<th scope="col" id="membership_id" class="manage-column">Order</th>';
-        echo '<th scope="col" id="membership_id" class="manage-column">Started</th>';
-        echo '<th scope="col" id="membership_id" class="manage-column">Ends/Ending</th>';
-        echo '<th scope="col" id="membership_id" class="manage-column">Notes</th>';
+        echo '<th scope="col" class="manage-column">User</th>';
+        echo '<th scope="col" class="manage-column">Product</th>';
+        echo '<th scope="col" class="manage-column">Order</th>';
+        echo '<th scope="col" class="manage-column">Started</th>';
+        echo '<th scope="col" class="manage-column">Ends/Ending</th>';
+        echo '<th scope="col" class="manage-column">Notes</th>';
         echo '</tr>';
         echo '</thead>';
         echo '</table>';

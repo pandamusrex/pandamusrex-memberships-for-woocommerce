@@ -78,12 +78,12 @@ class PandamusRex_Memberships_Admin {
         } else {
             foreach ( $memberships as $membership ) {
                 echo '<tr>';
-                echo '<td>' . esc_html( $membership->user_id ) . '</td>';
-                echo '<td>' . esc_html( $membership->product_id ) . '</td>';
-                echo '<td>' . esc_html( $membership->order_id ) . '</td>';
-                echo '<td>' . esc_html( $membership->membership_starts ) . '</td>';
-                echo '<td>' . esc_html( $membership->membership_ends ) . '</td>';
-                echo '<td>' . esc_html( $membership->notes ) . '</td>';
+                echo '<td>' . esc_html( $membership['user_id'] ) . '</td>';
+                echo '<td>' . esc_html( $membership['product_id'] ) . '</td>';
+                echo '<td>' . esc_html( $membership['order_id'] ) . '</td>';
+                echo '<td>' . esc_html( $membership['membership_starts'] ) . '</td>';
+                echo '<td>' . esc_html( $membership['membership_ends'] ) . '</td>';
+                echo '<td>' . esc_html( $membership['notes'] ) . '</td>';
                 echo '<tr>';
             }
         }

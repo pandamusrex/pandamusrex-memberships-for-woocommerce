@@ -68,7 +68,6 @@ class PandamusRex_Memberships_Admin {
         echo '</thead>';
 
         $memberships = PandamusRex_Memberships_Db::getAllMemberships();
-        $memberships = []; // TODO REMOVE
 
         if ( empty( $memberships ) ) {
             echo '<tr class="no-items">';
@@ -77,7 +76,16 @@ class PandamusRex_Memberships_Admin {
             echo '</td>';
             echo '</tr>';
         } else {
-
+            foreach ( $memberships as $membership ) {
+                echo '<tr>';
+                echo '<td>' . esc_html( $membership->user_id ) . '</td>';
+                echo '<td>' . esc_html( $membership->product_id ) . '</td>';
+                echo '<td>' . esc_html( $membership->order_id ) . '</td>';
+                echo '<td>' . esc_html( $membership->membership_starts ) . '</td>';
+                echo '<td>' . esc_html( $membership->membership_ends ) . '</td>';
+                echo '<td>' . esc_html( $membership->notes ) . '</td>';
+                echo '<tr>';
+            }
         }
 
         echo '<tfoot>';

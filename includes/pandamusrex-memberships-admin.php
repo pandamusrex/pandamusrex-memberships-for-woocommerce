@@ -30,7 +30,7 @@ class PandamusRex_Memberships_Admin {
             'pandamusrex_memberships_page',
             [ $this, 'memberships_page' ],
             'dashicons-pets',
-            6
+            59 // below first separator
         );
 
         add_submenu_page(
@@ -43,14 +43,21 @@ class PandamusRex_Memberships_Admin {
         );
     }
 
-    public function memberships_page(){
-        esc_html_e( 'Memberships Page Test', 'pandamusrex-memberships' );	
+    public function memberships_page() {
+        echo '<div class="wrap">';
+        echo '<h2>';
+        esc_html_e( 'Memberships Page Test', 'pandamusrex-memberships' );
+        echo '</h2>';
+        echo '</div>';
     }
 
-    public function add_membership_page(){
-        esc_html_e( 'Add Membership Page Test', 'pandamusrex-memberships' );	
+    public function add_membership_page() {
+        echo '<div class="wrap">';
+        echo '<h2>';
+        esc_html_e( 'Add Membership Page Test', 'pandamusrex-memberships' );
+        echo '</h2>';
+        echo '</div>';
     }
 }
-
 
 PandamusRex_Memberships_Admin::get_instance();

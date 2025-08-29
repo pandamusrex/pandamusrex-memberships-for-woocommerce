@@ -46,19 +46,39 @@ class PandamusRex_Memberships_Admin {
     public function memberships_page() {
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">';
-        esc_html_e( 'Memberships Page Test', 'pandamusrex-memberships' );
+        esc_html_e( 'Memberships', 'pandamusrex-memberships' );
         echo '</h1>';
         echo '<a href="?page=pandamusrex_add_membership_page" class="page-title-action">';
         esc_html_e( 'Add Membership', 'pandamusrex-memberships' );
         echo '</a>';
+        echo '<hr class="wp-header-end">';
+
+        echo '<table class="wp-list-table widefat fixed striped table-view-list">';
+        echo '<thead>';
+        echo '<tr>';
+        echo '<th scope="col" class="manage-column">ID</th>';
+        echo '<th scope="col" id="membership_id" class="manage-column">User</th>';
+        echo '<th scope="col" id="membership_id" class="manage-column">Product</th>';
+        echo '<th scope="col" id="membership_id" class="manage-column">Order</th>';
+        echo '<th scope="col" id="membership_id" class="manage-column">Started</th>';
+        echo '<th scope="col" id="membership_id" class="manage-column">Ends/Ending</th>';
+        echo '<th scope="col" id="membership_id" class="manage-column">Notes</th>';
+        echo '</tr>';
+        echo '</thead>';
+        echo '</table>';
+
         echo '</div>';
     }
 
     public function add_membership_page() {
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">';
-        esc_html_e( 'Add Membership Page Test', 'pandamusrex-memberships' );
+        esc_html_e( 'Add Membership', 'pandamusrex-memberships' );
         echo '</h1>';
+        echo '<hr class="wp-header-end">';
+
+
+
         echo '</div>';
     }
 }

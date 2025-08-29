@@ -45,17 +45,20 @@ class PandamusRex_Memberships_Admin {
 
     public function memberships_page() {
         echo '<div class="wrap">';
-        echo '<h2>';
+        echo '<h1 class="wp-heading-inline">';
         esc_html_e( 'Memberships Page Test', 'pandamusrex-memberships' );
-        echo '</h2>';
+        echo '</h1>';
+        echo '<a href="?page=pandamusrex_add_membership_page" class="page-title-action">';
+        esc_html_e( 'Add Membership', 'pandamusrex-memberships' );
+        echo '</a>';
         echo '</div>';
     }
 
     public function add_membership_page() {
         echo '<div class="wrap">';
-        echo '<h2>';
+        echo '<h1 class="wp-heading-inline">';
         esc_html_e( 'Add Membership Page Test', 'pandamusrex-memberships' );
-        echo '</h2>';
+        echo '</h1>';
         echo '</div>';
     }
 }

@@ -66,6 +66,30 @@ class PandamusRex_Memberships_Admin {
         echo '<th scope="col" class="manage-column">Notes</th>';
         echo '</tr>';
         echo '</thead>';
+
+        $memberships = PandamusRex_Memberships_Db::getAllMemberships();
+        $memberships = []; // TODO REMOVE
+
+        if ( empty( $memberships ) ) {
+            echo '<tr class="no-items">';
+            echo '<td class="colspanchange" colspan="6">';
+            esc_html_e( 'No memberships found.', 'pandamusrex-memberships' );
+            echo '</td>';
+            echo '</tr>';
+        } else {
+
+        }
+
+        echo '<tfoot>';
+        echo '<tr>';
+        echo '<th scope="col" class="manage-column">User</th>';
+        echo '<th scope="col" class="manage-column">Product</th>';
+        echo '<th scope="col" class="manage-column">Order</th>';
+        echo '<th scope="col" class="manage-column">Started</th>';
+        echo '<th scope="col" class="manage-column">Ends/Ending</th>';
+        echo '<th scope="col" class="manage-column">Notes</th>';
+        echo '</tr>';
+        echo '</tfoot>';
         echo '</table>';
 
         echo '</div>';

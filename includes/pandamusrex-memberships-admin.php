@@ -245,7 +245,7 @@ class PandamusRex_Memberships_Admin {
 
         echo '<p class="submit">';
         echo '<input type="submit" name="createmembership" id="createmembershipsub" class="button button-primary" value="' .
-            esc_attr_e( 'Add Membership', 'pandamusrex-memberships' ) .
+            esc_attr( 'Add Membership', 'pandamusrex-memberships' ) .
             '">';
         echo '</p>';
 

@@ -229,12 +229,18 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        // TODO note field
+        echo '<input name="note" type="text" id="note" value="">';
         echo '</td>';
         echo '</tr>';
 
         echo '</tbody>';
         echo '</table>';
+
+        echo '<p class="submit">';
+        echo '<input type="submit" name="createmembership" id="createmembershipsub" class="button button-primary" value="' .
+            esc_html( 'Add Membership', 'pandamusrex-memberships' ) .
+            '>';
+        echo '</p>';
 
         echo '</div>';
     }

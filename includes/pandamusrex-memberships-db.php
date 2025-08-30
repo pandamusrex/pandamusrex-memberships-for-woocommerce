@@ -195,6 +195,34 @@ class PandamusRex_Memberships_Db {
         return $data;
     }
 
+    public static function getMembershipByID( $membership_id ) {
+        global $wpdb;
+
+        $sql = 'SELECT * FROM %i WHERE id = %d';
+        $vars = [ self::getTableName(), $membership_id ];
+        $results = $wpdb->get_results( $wpdb->prepare( $sql, $vars ), ARRAY_A );
+
+        // Keep just the date for start, end
+        // DB has YYYY-MM-DD HH:MM:SS.ffffff, so convert it to MM/DD/YYYY
+        foreach ( $results as &$result ) {
+            if ( array_key_exists( 'membership_starts', $result ) ) {
+                $yyyy_mm_dd = $result[ 'membership_starts' ];
+                $result[ 'membership_starts' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
+            }
+            if ( array_key_exists( 'membership_ends', $result ) ) {
+                $yyyy_mm_dd = $result[ 'membership_ends' ];
+                $result[ 'membership_ends' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
+            }
+        }
+        unset( $result );
+
+        if ( empty( $result ) ) {
+            return [];
+        }
+
+        return $results[0];
+    }
+
     public static function deleteMembership( $membership_id ) {
         global $wpdb;
 

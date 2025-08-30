@@ -38,8 +38,8 @@ class PandamusRex_Memberships_Admin {
             __( 'Add', 'pandamusrex-memberships' ),
             __( 'Add', 'pandamusrex-memberships' ),
             'manage_options',
-            'pandamusrex_add_membership_page',
-            [ $this, 'add_membership_page' ]
+            'pandamusrex_single_membership_page',
+            [ $this, 'single_membership_page' ]
         );
     }
 
@@ -103,14 +103,138 @@ class PandamusRex_Memberships_Admin {
         echo '</div>';
     }
 
-    public function add_membership_page() {
+    public function single_membership_page() {
+        $wp_tz = wp_timezone_string();
+        $start_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
+        $ends_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
+        $ends_dt->add( DateInterval::createFromDateString( '365 days' ) );
+
+        $id = 0;
+        $user_id = 0;
+        $product_id = 0;
+        $order_id = 0;
+        $membership_starts = $start_dt->format( "Y-m-d" );
+        $membership_ends = $membership_ends = $ends_dt->format( "Y-m-d" );
+        $note = __( 'Membership added manually', 'pandamusrex-memberships' );
+
+        // If we have been passed a membership ID in $_GET[ 'edit_id' ]
+        // let's grab its details and allow for editing
+        if ( ( isset( $_GET[ 'membership_id' ] ) ) ) {
+            $id = sanitize_text_field( $_GET[ 'membership_id' ] );
+            $id = intval( $id );
+            $membership = PandamusRex_Memberships_Db::getMembershipByID( $id );
+            if ( ! empty( $membership ) ) {
+                $id = $membership->id;
+                $user_id = $membership->user_id;
+                $product_id = $membership->product_id;
+                $order_id = $membership->order_id;
+                $membership_starts = $membership->membership_starts;
+                $membership_ends = $membership->memberships_ends;
+                $note = $membership->note;
+            }
+        }
+
         echo '<div class="wrap">';
-        echo '<h1 class="wp-heading-inline">';
-        esc_html_e( 'Add Membership', 'pandamusrex-memberships' );
-        echo '</h1>';
+        if ( $id == 0 ) {
+            echo '<h1 class="wp-heading-inline">';
+            esc_html_e( 'Add Membership', 'pandamusrex-memberships' );
+            echo '<p>';
+            esc_html_e( 'Manually enter a membership for a user.', 'pandamusrex-memberships' );
+            echo '</p>';
+            echo '</h1>';
+        } else {
+            echo '<h1 class="wp-heading-inline">';
+            esc_html_e( 'Edit Membership', 'pandamusrex-memberships' );
+            echo '</h1>';
+        }
         echo '<hr class="wp-header-end">';
 
+        echo '<table class="form-table">';
+        echo '<tbody>';
 
+        echo '<tr class="form-field">';
+        echo '<th>';
+        echo '<label for="">';
+        esc_html_e( 'ID', 'pandamusrex-memberships' );
+        echo '</label>';
+        echo '</th>';
+        echo '<td>';
+        if ( $id == 0 ) {
+            esc_html_e( '(Automatically assigned)', 'pandamusrex-memberships' );
+        } else {
+            echo esc_html( $id );
+        }
+        echo '</td>';
+        echo '</tr>';
+
+        echo '<tr class="form-field">';
+        echo '<th>';
+        echo '<label for="">';
+        esc_html_e( 'User', 'pandamusrex-memberships' );
+        echo '</label>';
+        echo '</th>';
+        echo '<td>';
+        // TODO user picker
+        echo '</td>';
+        echo '</tr>';
+
+        echo '<tr class="form-field">';
+        echo '<th>';
+        echo '<label for="">';
+        esc_html_e( 'Product', 'pandamusrex-memberships' );
+        echo '</label>';
+        echo '</th>';
+        echo '<td>';
+        // TODO product picker
+        echo '</td>';
+        echo '</tr>';
+
+        echo '<tr class="form-field">';
+        echo '<th>';
+        echo '<label for="">';
+        esc_html_e( 'Order', 'pandamusrex-memberships' );
+        echo '</label>';
+        echo '</th>';
+        echo '<td>';
+        // TODO order picker
+        echo '</td>';
+        echo '</tr>';
+
+        echo '<tr class="form-field">';
+        echo '<th>';
+        echo '<label for="">';
+        esc_html_e( 'Membership Starts/Started', 'pandamusrex-memberships' );
+        echo '</label>';
+        echo '</th>';
+        echo '<td>';
+        // TODO membership starts picker
+        echo '</td>';
+        echo '</tr>';
+
+        echo '<tr class="form-field">';
+        echo '<th>';
+        echo '<label for="">';
+        esc_html_e( 'Membership Ends/Ended', 'pandamusrex-memberships' );
+        echo '</label>';
+        echo '</th>';
+        echo '<td>';
+        // TODO membership ends picker
+        echo '</td>';
+        echo '</tr>';
+
+        echo '<tr class="form-field">';
+        echo '<th>';
+        echo '<label for="">';
+        esc_html_e( 'Note', 'pandamusrex-memberships' );
+        echo '</label>';
+        echo '</th>';
+        echo '<td>';
+        // TODO note field
+        echo '</td>';
+        echo '</tr>';
+
+        echo '</tbody>';
+        echo '</table>';
 
         echo '</div>';
     }

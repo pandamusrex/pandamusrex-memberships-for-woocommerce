@@ -200,6 +200,9 @@ class PandamusRex_Memberships_Admin {
             'meta_key'   => '_pandamusrex_prod_incl_membership'
         );
         $products = wc_get_products( $args );
+        echo '<option value="0">';
+        echo esc_html( 'None', 'pandamusrex-memberships' );
+        echo '</option>';
         foreach ( $products as $product ) {
             $product_id = $product->get_id();
             echo '<option value="' . esc_attr( $product_id ) . '">';
@@ -218,6 +221,9 @@ class PandamusRex_Memberships_Admin {
         echo '</th>';
         echo '<td>';
         echo '<select>';
+        echo '<option value="0">';
+        echo esc_html( 'None', 'pandamusrex-memberships' );
+        echo '</option>';
         $args = array(
             'limit'      => -1,
         );
@@ -247,7 +253,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        echo '<input name="membership_starts" type="date" value="" />';
+        echo '<input name="membership_starts" type="date" value="' . esc_attr( $membership_starts ) . '" />';
         echo '</td>';
         echo '</tr>';
 
@@ -258,7 +264,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        echo '<input name="membership_ends" type="date" value=""/>';
+        echo '<input name="membership_ends" type="date" value="' . esc_attr( $membership_ends ) . '"/>';
         echo '</td>';
         echo '</tr>';
 
@@ -269,7 +275,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        echo '<input name="note" type="text" id="note" value="">';
+        echo '<input name="note" type="text" id="note" value="' . esc_attr( $note ) . '">';
         echo '</td>';
         echo '</tr>';
 

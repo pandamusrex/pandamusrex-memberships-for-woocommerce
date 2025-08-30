@@ -177,8 +177,9 @@ class PandamusRex_Memberships_Admin {
         echo '<select>';
         $users = get_users();
         foreach ( $users as $user ) {
-            echo '<option value="' . esc_attr( $user->ID ) . '">';
-            echo esc_html( $user->display_name ) . ' ' . esc_html( $user->email );
+            $user_id = $user->ID;
+            echo '<option value="' . esc_attr( $user_id ) . '">';
+            echo esc_html( '#' . $user_id . ' ' . $user->display_name . ' ' . $user->user_email );
             echo '</option>';
         }
         echo '</select>';
@@ -200,8 +201,9 @@ class PandamusRex_Memberships_Admin {
         );
         $products = wc_get_products( $args );
         foreach ( $products as $product ) {
-            echo '<option value="' . esc_attr( $product->ID ) . '">';
-            echo esc_html( $product->get_title() );
+            $product_id = $product->ID;
+            echo '<option value="' . esc_attr( $product_id ) . '">';
+            echo esc_html( '#' . $product_id . ' ' . $product->get_title() );
             echo '</option>';
         }
         echo '</select>';
@@ -215,7 +217,26 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        // TODO order picker
+        echo '<select>';
+        $args = array(
+            'limit'      => -1,
+        );
+        $products = wc_get_orders( $args );
+        foreach ( $orders as $order ) {
+            $customer_id = $order->get_customer_id();
+            if ( $customer_id ) {
+                $order_id = $order->get_id();
+                $order_date = $order->get_date_created;
+                $formatted_order_date = $order_date->date( 'Y-m-d' );
+                $customer = new WC_Customer( $customer_id );
+                $customer_name = $customer->get_first_name() . " " . $customer->get_last_name();
+                $customer_email = $customer->get_email();
+                echo '<option value="' . esc_attr( $order_id ) . '">';
+                echo esc_html( '#' . $order_id . ' ' . $customer_name . ' ' . $customer_email . ' ' . $formatted_order_date );
+                echo '</option>';
+            }
+        }
+        echo '</select>';
         echo '</td>';
         echo '</tr>';
 

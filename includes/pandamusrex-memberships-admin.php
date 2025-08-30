@@ -179,7 +179,7 @@ class PandamusRex_Memberships_Admin {
         foreach ( $users as $user ) {
             $user_id = $user->ID;
             echo '<option value="' . esc_attr( $user_id ) . '">';
-            echo esc_html( '#' . $user_id . '-' . $user->display_name . '-' . $user->user_email );
+            echo esc_html( '#' . $user_id . ' - ' . $user->display_name . ' - ' . $user->user_email );
             echo '</option>';
         }
         echo '</select>';
@@ -203,7 +203,7 @@ class PandamusRex_Memberships_Admin {
         foreach ( $products as $product ) {
             $product_id = $product->get_id();
             echo '<option value="' . esc_attr( $product_id ) . '">';
-            echo esc_html( '#' . $product_id . '-' . $product->get_title() );
+            echo esc_html( '#' . $product_id . ' - ' . $product->get_title() );
             echo '</option>';
         }
         echo '</select>';
@@ -226,13 +226,13 @@ class PandamusRex_Memberships_Admin {
             $customer_id = $order->get_customer_id();
             if ( $customer_id ) {
                 $order_id = $order->get_id();
-                $order_date = $order->get_date_created;
+                $order_date = $order->get_date_created();
                 $formatted_order_date = $order_date->date( 'Y-m-d' );
                 $customer = new WC_Customer( $customer_id );
                 $customer_name = $customer->get_first_name() . " " . $customer->get_last_name();
                 $customer_email = $customer->get_email();
                 echo '<option value="' . esc_attr( $order_id ) . '">';
-                echo esc_html( '#' . $order_id . ' ' . $customer_name . ' ' . $customer_email . ' ' . $formatted_order_date );
+                echo esc_html( '#' . $order_id . ' - ' . $customer_name . ' - ' . $customer_email . ' - ' . $formatted_order_date );
                 echo '</option>';
             }
         }

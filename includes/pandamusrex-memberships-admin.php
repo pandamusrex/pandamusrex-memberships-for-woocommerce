@@ -92,12 +92,13 @@ class PandamusRex_Memberships_Admin {
 
         echo '<tfoot>';
         echo '<tr>';
-        echo '<th scope="col" class="manage-column">User</th>';
-        echo '<th scope="col" class="manage-column">Product</th>';
-        echo '<th scope="col" class="manage-column">Order</th>';
-        echo '<th scope="col" class="manage-column">Started</th>';
-        echo '<th scope="col" class="manage-column">Ends/Ending</th>';
-        echo '<th scope="col" class="manage-column">Notes</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'ID', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'User', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'Product', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'Order', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'Started', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'Ends/Ending', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'Note', 'pandamusrex-memberships' ) . '</th>';
         echo '</tr>';
         echo '</tfoot>';
         echo '</table>';

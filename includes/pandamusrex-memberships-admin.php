@@ -169,6 +169,7 @@ class PandamusRex_Memberships_Admin {
         } else {
             echo esc_html( $id );
         }
+        echo '<input name="id" type="hidden" id="id" value="' . esc_attr( $id ) . '">';
         echo '</td>';
         echo '</tr>';
 
@@ -181,10 +182,11 @@ class PandamusRex_Memberships_Admin {
         echo '<td>';
         echo '<select>';
         $users = get_users();
-        foreach ( $users as $user ) {
-            $user_id = $user->ID;
-            echo '<option value="' . esc_attr( $user_id ) . '">';
-            echo esc_html( '#' . $user_id . ' - ' . $user->display_name . ' - ' . $user->user_email );
+        foreach ( $loop_users as $loop_user ) {
+            $loop_user_id = $loop_user->ID;
+            $selected = ( $loop_user_id == $user_id ) ? 'selected' : '';
+            echo '<option value="' . esc_attr( $loop_user_id ) . ' ' . $selected . '">';
+            echo esc_html( '#' . $loop_user_id . ' - ' . $loop_user->display_name . ' - ' . $loop_user->user_email );
             echo '</option>';
         }
         echo '</select>';
@@ -208,10 +210,11 @@ class PandamusRex_Memberships_Admin {
         echo '<option value="0">';
         echo esc_html( 'None', 'pandamusrex-memberships' );
         echo '</option>';
-        foreach ( $products as $product ) {
-            $product_id = $product->get_id();
-            echo '<option value="' . esc_attr( $product_id ) . '">';
-            echo esc_html( '#' . $product_id . ' - ' . $product->get_title() );
+        foreach ( $loop_products as $loop_product ) {
+            $loop_product_id = $loop_product->get_id();
+            $selected = ( $loop_product_id == $product_id ) ? 'selected' : '';
+            echo '<option value="' . esc_attr( $loop_product_id ) . ' ' . $selected . '">';
+            echo esc_html( '#' . $loop_product_id . ' - ' . $loop_product->get_title() );
             echo '</option>';
         }
         echo '</select>';
@@ -233,17 +236,18 @@ class PandamusRex_Memberships_Admin {
             'limit'      => -1,
         );
         $orders = wc_get_orders( $args );
-        foreach ( $orders as $order ) {
-            $customer_id = $order->get_customer_id();
-            if ( $customer_id ) {
-                $order_id = $order->get_id();
-                $order_date = $order->get_date_created();
-                $formatted_order_date = $order_date->date( 'Y-m-d' );
-                $customer = new WC_Customer( $customer_id );
-                $customer_name = $customer->get_first_name() . " " . $customer->get_last_name();
-                $customer_email = $customer->get_email();
-                echo '<option value="' . esc_attr( $order_id ) . '">';
-                echo esc_html( '#' . $order_id . ' - ' . $customer_name . ' - ' . $customer_email . ' - ' . $formatted_order_date );
+        foreach ( $loop_orders as $loop_order ) {
+            $loop_customer_id = $loop_order->get_customer_id();
+            if ( $loop_customer_id ) {
+                $loop_order_id = $loop_order->get_id();
+                $loop_order_date = $loop_order->get_date_created();
+                $formatted_loop_order_date = $loop_order_date->date( 'd/m/Y' );
+                $loop_customer = new WC_Customer( $loop_customer_id );
+                $loop_customer_name = $loop_customer->get_first_name() . " " . $loop_customer->get_last_name();
+                $loop_customer_email = $loop_customer->get_email();
+                $selected = ( $loop_order_id == $order_id ) ? 'selected' : '';
+                echo '<option value="' . esc_attr( $loop_order_id ) . ' ' . $selected . '">';
+                echo esc_html( '#' . $loop_order_id . ' - ' . $loop_customer_name . ' - ' . $loop_customer_email . ' - ' . $formatted_loop_order_date );
                 echo '</option>';
             }
         }
@@ -280,7 +284,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        echo '<input name="note" type="text" id="note" value="' . esc_attr( $note ) . '">';
+        echo '<input name="note" type="text" id="note" value="' . esc_attr( $note ) . '" />';
         echo '</td>';
         echo '</tr>';
 
@@ -290,9 +294,13 @@ class PandamusRex_Memberships_Admin {
         echo '</form>';
 
         echo '<p class="submit">';
-        echo '<input type="submit" name="createmembership" id="createmembershipsub" class="button button-primary" value="' .
-            esc_attr( 'Add Membership', 'pandamusrex-memberships' ) .
-            '">';
+        $button_label = __( 'Save Changes', 'pandamusrex-memberships' );
+        if ( $id == 0 ) {
+            $button_label = __( 'Create Membership', 'pandamusrex-memberships' );
+        }
+        echo '<input type="submit" name="add_edit_membership" id="add_edit_membership" class="button button-primary" value="' .
+            $button_label .
+            '" />';
         echo '</p>';
 
         echo '</div>';

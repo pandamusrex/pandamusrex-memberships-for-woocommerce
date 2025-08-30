@@ -134,8 +134,18 @@ class PandamusRex_Memberships_Admin {
                 $membership_starts = $membership->membership_starts;
                 $membership_ends = $membership->memberships_ends;
                 $note = $membership->note;
+            } else {
+                $id = 0;
             }
         }
+
+        wc_get_logger()->debug( "ID: $id" );
+        wc_get_logger()->debug( "User ID: $user_id" );
+        wc_get_logger()->debug( "Product ID: $membership_starts" );
+        wc_get_logger()->debug( "Order ID: $product_id" );
+        wc_get_logger()->debug( "Starts: $membership_starts" );
+        wc_get_logger()->debug( "Ends: $membership_ends" );
+        wc_get_logger()->debug( "Note: $note" );
 
         echo '<div class="wrap">';
         if ( $id == 0 ) {

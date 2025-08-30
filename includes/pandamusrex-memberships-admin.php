@@ -174,14 +174,14 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
+        echo '<select>';
         $users = get_users();
         foreach ( $users as $user ) {
-            echo '<select>';
             echo '<option value="' . esc_attr( $user->ID ) . '">';
             echo esc_html( $user->display_name ) . ' ' . esc_html( $user->email );
             echo '</option>';
-            echo '</select>';
         }
+        echo '</select>';
         echo '</td>';
         echo '</tr>';
 
@@ -192,7 +192,19 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        // TODO product picker
+        echo '<select>';
+        $args = array(
+            'limit'      => -1,
+            'status'     => 'publish',
+            'meta_key'   => '_pandamusrex_prod_incl_membership'
+        );
+        $products = wc_get_products( $args );
+        foreach ( $products as $product ) {
+            echo '<option value="' . esc_attr( $product->ID ) . '">';
+            echo esc_html( $product->get_title() );
+            echo '</option>';
+        }
+        echo '</select>';
         echo '</td>';
         echo '</tr>';
 

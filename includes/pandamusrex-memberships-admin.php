@@ -35,8 +35,8 @@ class PandamusRex_Memberships_Admin {
 
         add_submenu_page(
             'pandamusrex_memberships_page',
-            __( 'Add', 'pandamusrex-memberships' ),
-            __( 'Add', 'pandamusrex-memberships' ),
+            __( 'Add Membership', 'pandamusrex-memberships' ),
+            __( 'Add Membership', 'pandamusrex-memberships' ),
             'manage_options',
             'pandamusrex_single_membership_page',
             [ $this, 'single_membership_page' ]
@@ -238,8 +238,8 @@ class PandamusRex_Memberships_Admin {
 
         echo '<p class="submit">';
         echo '<input type="submit" name="createmembership" id="createmembershipsub" class="button button-primary" value="' .
-            esc_html( 'Add Membership', 'pandamusrex-memberships' ) .
-            '>';
+            esc_attr_e( 'Add Membership', 'pandamusrex-memberships' ) .
+            '">';
         echo '</p>';
 
         echo '</div>';

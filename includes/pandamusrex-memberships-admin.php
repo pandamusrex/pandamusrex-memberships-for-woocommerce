@@ -181,7 +181,7 @@ class PandamusRex_Memberships_Admin {
         echo '</th>';
         echo '<td>';
         echo '<select>';
-        $users = get_users();
+        $loop_users = get_users();
         foreach ( $loop_users as $loop_user ) {
             $loop_user_id = $loop_user->ID;
             $selected = ( $loop_user_id == $user_id ) ? 'selected' : '';
@@ -206,7 +206,7 @@ class PandamusRex_Memberships_Admin {
             'status'     => 'publish',
             'meta_key'   => '_pandamusrex_prod_incl_membership'
         );
-        $products = wc_get_products( $args );
+        $loop_products = wc_get_products( $args );
         echo '<option value="0">';
         echo esc_html( 'None', 'pandamusrex-memberships' );
         echo '</option>';
@@ -235,7 +235,7 @@ class PandamusRex_Memberships_Admin {
         $args = array(
             'limit'      => -1,
         );
-        $orders = wc_get_orders( $args );
+        $loop_orders = wc_get_orders( $args );
         foreach ( $loop_orders as $loop_order ) {
             $loop_customer_id = $loop_order->get_customer_id();
             if ( $loop_customer_id ) {

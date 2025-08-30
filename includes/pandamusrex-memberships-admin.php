@@ -58,12 +58,13 @@ class PandamusRex_Memberships_Admin {
         echo '<table class="wp-list-table widefat fixed striped table-view-list">';
         echo '<thead>';
         echo '<tr>';
-        echo '<th scope="col" class="manage-column">User</th>';
-        echo '<th scope="col" class="manage-column">Product</th>';
-        echo '<th scope="col" class="manage-column">Order</th>';
-        echo '<th scope="col" class="manage-column">Started</th>';
-        echo '<th scope="col" class="manage-column">Ends/Ending</th>';
-        echo '<th scope="col" class="manage-column">Notes</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'ID', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'User', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'Product', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'Order', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'Started', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'Ends/Ending', 'pandamusrex-memberships' ) . '</th>';
+        echo '<th scope="col" class="manage-column">' . esc_html__( 'Note', 'pandamusrex-memberships' ) . '</th>';
         echo '</tr>';
         echo '</thead>';
 
@@ -71,13 +72,14 @@ class PandamusRex_Memberships_Admin {
 
         if ( empty( $memberships ) ) {
             echo '<tr class="no-items">';
-            echo '<td class="colspanchange" colspan="6">';
+            echo '<td class="colspanchange" colspan="7">';
             esc_html_e( 'No memberships found.', 'pandamusrex-memberships' );
             echo '</td>';
             echo '</tr>';
         } else {
             foreach ( $memberships as $membership ) {
                 echo '<tr>';
+                echo '<td>' . esc_html( $membership['id'] ) . '</td>';
                 echo '<td>' . esc_html( $membership['user_id'] ) . '</td>';
                 echo '<td>' . esc_html( $membership['product_id'] ) . '</td>';
                 echo '<td>' . esc_html( $membership['order_id'] ) . '</td>';
@@ -148,6 +150,8 @@ class PandamusRex_Memberships_Admin {
             echo '</h1>';
         }
         echo '<hr class="wp-header-end">';
+
+        echo '<form method="post">';
 
         echo '<table class="form-table">';
         echo '<tbody>';
@@ -281,6 +285,8 @@ class PandamusRex_Memberships_Admin {
 
         echo '</tbody>';
         echo '</table>';
+
+        echo '</form>';
 
         echo '<p class="submit">';
         echo '<input type="submit" name="createmembership" id="createmembershipsub" class="button button-primary" value="' .

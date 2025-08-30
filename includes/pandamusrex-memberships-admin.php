@@ -247,7 +247,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        // TODO membership starts picker
+        echo '<input name="membership_starts" type="date" value="" />';
         echo '</td>';
         echo '</tr>';
 
@@ -258,7 +258,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        // TODO membership ends picker
+        echo '<input name="membership_ends" type="date" value=""/>';
         echo '</td>';
         echo '</tr>';
 

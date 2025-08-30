@@ -179,7 +179,7 @@ class PandamusRex_Memberships_Admin {
         foreach ( $users as $user ) {
             $user_id = $user->ID;
             echo '<option value="' . esc_attr( $user_id ) . '">';
-            echo esc_html( '#' . $user_id . ' ' . $user->display_name . ' ' . $user->user_email );
+            echo esc_html( '#' . $user_id . '-' . $user->display_name . '-' . $user->user_email );
             echo '</option>';
         }
         echo '</select>';
@@ -201,9 +201,9 @@ class PandamusRex_Memberships_Admin {
         );
         $products = wc_get_products( $args );
         foreach ( $products as $product ) {
-            $product_id = $product->ID;
+            $product_id = $product->get_id();
             echo '<option value="' . esc_attr( $product_id ) . '">';
-            echo esc_html( '#' . $product_id . ' ' . $product->get_title() );
+            echo esc_html( '#' . $product_id . '-' . $product->get_title() );
             echo '</option>';
         }
         echo '</select>';
@@ -221,7 +221,7 @@ class PandamusRex_Memberships_Admin {
         $args = array(
             'limit'      => -1,
         );
-        $products = wc_get_orders( $args );
+        $orders = wc_get_orders( $args );
         foreach ( $orders as $order ) {
             $customer_id = $order->get_customer_id();
             if ( $customer_id ) {

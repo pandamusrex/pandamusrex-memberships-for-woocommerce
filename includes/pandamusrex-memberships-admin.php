@@ -174,7 +174,14 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        // TODO user picker
+        $users = get_users();
+        foreach ( $users as $user ) {
+            echo '<select>';
+            echo '<option value="' . esc_attr( $user->ID ) . '">';
+            echo esc_html( $user->display_name ) . ' ' . esc_html( $user->email );
+            echo '</option>';
+            echo '</select>';
+        }
         echo '</td>';
         echo '</tr>';
 

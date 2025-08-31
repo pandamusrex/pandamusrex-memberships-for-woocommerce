@@ -101,15 +101,28 @@ class PandamusRex_Memberships_Admin {
                 echo ' | ';
                 echo '<span class="delete">';
                 $delete_url = "?page=pandamusrex_single_membership_page&action=delete&membership_id=" . $membership['id'];
-                // TODO - add nonce
                 echo '<a href="' . $delete_url . '">';
                 echo esc_html__( 'Delete', 'pandamusrex-memberships' );
                 echo '</a>';
                 echo '</span>';
                 echo '</div>';
                 echo '</td>';
-                echo '<td>' . esc_html( $membership['product_id'] ) . '</td>';
-                echo '<td>' . esc_html( $membership['order_id'] ) . '</td>';
+                echo '<td>';
+                $product_id = $membership['product_id'];
+                if ( $product_id == 0 ) {
+                    echo '-';
+                } else {
+                    echo esc_html( $product_id );
+                }
+                echo '</td>';
+                echo '<td>';
+                $order_id = $membership['order_id'];
+                if ( $order_id == 0 ) {
+                    echo '-';
+                } else {
+                    echo esc_html( $order_id );
+                }
+                echo '</td>';
                 echo '<td>' . esc_html( $membership['membership_starts'] ) . '</td>';
                 echo '<td>' . esc_html( $membership['membership_ends'] ) . '</td>';
                 echo '<td>' . esc_html( $membership['note'] ) . '</td>';

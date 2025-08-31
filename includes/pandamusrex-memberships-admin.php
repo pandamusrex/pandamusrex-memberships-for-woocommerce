@@ -562,6 +562,11 @@ class PandamusRex_Memberships_Admin {
 
         // CHECK NONCE
 
+        // Grab some data from the membership
+        $user_id = $membership['user_id'];
+        $membership_starts = $membership['membership_starts'];
+        $membership_ends = $membership['membership_ends'];
+
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">';
         esc_html_e( 'Delete Membership', 'pandamusrex-memberships' );

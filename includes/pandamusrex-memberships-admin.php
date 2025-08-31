@@ -107,45 +107,127 @@ class PandamusRex_Memberships_Admin {
     }
 
     public function single_membership_page() {
-        $wp_tz = wp_timezone_string();
-        $start_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
-        $ends_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
-        $ends_dt->add( DateInterval::createFromDateString( '365 days' ) );
+        // Admin only please
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
 
-        $id = 0;
-        $user_id = 0;
-        $product_id = 0;
-        $order_id = 0;
-        $membership_starts = $start_dt->format( "Y-m-d" );
-        $membership_ends = $ends_dt->format( "Y-m-d" );
-        $note = __( 'Membership added manually', 'pandamusrex-memberships' );
-
-        // If we have been passed a membership ID in $_GET[ 'edit_id' ]
-        // let's grab its details and allow for editing
-        if ( ( isset( $_GET[ 'membership_id' ] ) ) ) {
-            $id = sanitize_text_field( $_GET[ 'membership_id' ] );
+        // Are we processing a POST?
+        if ( isset( $_POST['membership_nonce'] ) && isset( $_POST['id'] ) ) {
+            $id = sanitize_text_field( $_POST['id'] );
             $id = intval( $id );
-            $membership = PandamusRex_Memberships_Db::getMembershipByID( $id );
-            if ( ! empty( $membership ) ) {
-                $id = $membership['id'];
-                $user_id = $membership['user_id'];
-                $product_id = $membership['product_id'];
-                $order_id = $membership['order_id'];
-                $membership_starts = $membership['membership_starts'];
-                $membership_ends = $membership['membership_ends'];
-                $note = $membership['note'];
+            if ( ! wp_verify_nonce( $_POST['membership_nonce'], 'membership-' . $id ) ) {
+                return;
+            }
+
+            // Make sure all fields are in the post
+            if ( ! isset( $_POST['user_id'] ) ) {
+                return;
+            }
+            if ( ! isset( $_POST['product_id'] ) ) {
+                return;
+            }
+            if ( ! isset( $_POST['order_id'] ) ) {
+                return;
+            }
+            if ( ! isset( $_POST['membership_starts'] ) ) {
+                return;
+            }
+            if ( ! isset( $_POST['membership_ends'] ) ) {
+                return;
+            }
+            if ( ! isset( $_POST['note'] ) ) {
+                return;
+            }
+
+            // Get the data
+            $user_id = intval( sanitize_text_field( $_POST['user_id'] ) );
+            $product_id = intval( sanitize_text_field( $_POST['product_id'] ) );
+            $order_id = intval( sanitize_text_field( $_POST['order_id'] ) );
+            $membership_starts = sanitize_text_field( $_POST['membership_starts'] );
+            $membership_ends = sanitize_text_field( $_POST['membership_ends'] );
+            $note = sanitize_text_field( $_POST['note'] );
+
+            // TODO Better data shape checking
+
+            // Save it
+            if ( $id == 0 ) {
+                $result = PandamusRex_Memberships_Db::addMembershipForUser(
+                    $user_id,
+                    $product_id,
+                    $order_id,
+                    $membership_starts,
+                    $membership_ends,
+                    $note
+                );
+
+                // TODO Error handling
+                $id = $result['id'];
+
+                wp_admin_notice(
+                    __( 'Successfully added membership for user', 'pandamusrex-memberships' )
+                );
             } else {
-                $id = 0;
+                PandamusRex_Memberships_Db::updateMembershipForUser(
+                    $id,
+                    $user_id,
+                    $product_id,
+                    $order_id,
+                    $membership_starts,
+                    $membership_ends,
+                    $note
+                );
+
+                // TODO Error handling
+                wp_admin_notice(
+                    __( 'Successfully updated membership for user', 'pandamusrex-memberships' )
+                );
             }
         }
 
-        wc_get_logger()->debug( "ID: $id" );
-        wc_get_logger()->debug( "User ID: $user_id" );
-        wc_get_logger()->debug( "Product ID: $product_id" );
-        wc_get_logger()->debug( "Order ID: $order_id" );
-        wc_get_logger()->debug( "Starts: $membership_starts" );
-        wc_get_logger()->debug( "Ends: $membership_ends" );
-        wc_get_logger()->debug( "Note: $note" );
+        // If we don't have an $id yet, try to get it from the query string
+        // and see if it points to an actual membership
+        if ( empty( $id ) ) {
+            if ( ( isset( $_GET[ 'membership_id' ] ) ) ) {
+                $try_id = sanitize_text_field( $_GET[ 'membership_id' ] );
+                $try_id = intval( $try_id );
+                $membership = PandamusRex_Memberships_Db::getMembershipByID( $try_id );
+                if ( ! empty( $membership ) ) {
+                    $id = $try_id;
+                    $user_id = $membership['user_id'];
+                    $product_id = $membership['product_id'];
+                    $order_id = $membership['order_id'];
+                    $membership_starts = $membership['membership_starts'];
+                    $membership_ends = $membership['membership_ends'];
+                    $note = $membership['note'];
+                }
+            }
+        }
+
+        // If we still don't have an id, fill in some defaults
+        // so user can create a membership
+        if ( empty( $id ) ) {
+            $wp_tz = wp_timezone_string();
+            $start_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
+            $ends_dt = new DateTime( "now", new DateTimeZone( $wp_tz ) );
+            $ends_dt->add( DateInterval::createFromDateString( '365 days' ) );
+
+            $id = 0;
+            $user_id = 0;
+            $product_id = 0;
+            $order_id = 0;
+            $membership_starts = $start_dt->format( "Y-m-d" );
+            $membership_ends = $ends_dt->format( "Y-m-d" );
+            $note = __( 'Membership added manually', 'pandamusrex-memberships' );
+        }
+
+        // wc_get_logger()->debug( "ID: $id" );
+        // wc_get_logger()->debug( "User ID: $user_id" );
+        // wc_get_logger()->debug( "Product ID: $product_id" );
+        // wc_get_logger()->debug( "Order ID: $order_id" );
+        // wc_get_logger()->debug( "Starts: $membership_starts" );
+        // wc_get_logger()->debug( "Ends: $membership_ends" );
+        // wc_get_logger()->debug( "Note: $note" );
 
         echo '<div class="wrap">';
         if ( $id == 0 ) {
@@ -163,6 +245,9 @@ class PandamusRex_Memberships_Admin {
         echo '<hr class="wp-header-end">';
 
         echo '<form method="post">';
+
+        $nonce =  wp_create_nonce( 'membership-' . $id );
+        echo '<input type="hidden" name="membership_nonce" id="membership_nonce" value="' . esc_attr( $nonce ) . '" />';
 
         echo '<table class="form-table">';
         echo '<tbody>';

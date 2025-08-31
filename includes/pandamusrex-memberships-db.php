@@ -216,7 +216,7 @@ class PandamusRex_Memberships_Db {
         }
         unset( $result );
 
-        if ( empty( $result ) ) {
+        if ( empty( $results ) ) {
             return [];
         }
 

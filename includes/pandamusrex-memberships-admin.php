@@ -141,8 +141,8 @@ class PandamusRex_Memberships_Admin {
 
         wc_get_logger()->debug( "ID: $id" );
         wc_get_logger()->debug( "User ID: $user_id" );
-        wc_get_logger()->debug( "Product ID: $membership_starts" );
-        wc_get_logger()->debug( "Order ID: $product_id" );
+        wc_get_logger()->debug( "Product ID: $product_id" );
+        wc_get_logger()->debug( "Order ID: $order_id" );
         wc_get_logger()->debug( "Starts: $membership_starts" );
         wc_get_logger()->debug( "Ends: $membership_ends" );
         wc_get_logger()->debug( "Note: $note" );

@@ -44,6 +44,14 @@ class PandamusRex_Memberships_Admin {
     }
 
     public function echo_memberships_page() {
+        if ( ! function_exists( 'wc_get_logger' ) ) {
+            wp_admin_notice(
+                __( 'PandamusRex Memberships for WooCommerce requires the WooCommerce plugin to be active.', 'pandamusrex-memberships' )
+                [ 'error' ]
+            );
+            return;
+        }
+
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">';
         esc_html_e( 'Memberships', 'pandamusrex-memberships' );
@@ -155,6 +163,10 @@ class PandamusRex_Memberships_Admin {
 
     public function single_membership_page() {
         if ( ! function_exists( 'wc_get_logger' ) ) {
+            wp_admin_notice(
+                __( 'PandamusRex Memberships for WooCommerce requires the WooCommerce plugin to be active.', 'pandamusrex-memberships' )
+                [ 'error' ]
+            );
             return;
         }
 
@@ -697,7 +709,8 @@ class PandamusRex_Memberships_Admin {
         }
 
         wp_admin_notice(
-            __( 'Successfully added membership', 'pandamusrex-memberships' )
+            __( 'Successfully added membership', 'pandamusrex-memberships' ),
+            [ 'success' ]
         );
     
         // Wrap up by echoing the complete list
@@ -737,7 +750,8 @@ class PandamusRex_Memberships_Admin {
         }
 
         wp_admin_notice(
-            __( 'Successfully deleted membership', 'pandamusrex-memberships' )
+            __( 'Successfully deleted membership', 'pandamusrex-memberships' ),
+            [ 'success' ]
         );
     
         // Wrap up by echoing the complete list
@@ -804,7 +818,8 @@ class PandamusRex_Memberships_Admin {
         }
 
         wp_admin_notice(
-            __( 'Successfully updated membership', 'pandamusrex-memberships' )
+            __( 'Successfully updated membership', 'pandamusrex-memberships' ),
+            [ 'success' ]
         );
 
         // Wrap up by echoing the complete list

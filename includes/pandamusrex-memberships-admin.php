@@ -127,13 +127,13 @@ class PandamusRex_Memberships_Admin {
             $id = intval( $id );
             $membership = PandamusRex_Memberships_Db::getMembershipByID( $id );
             if ( ! empty( $membership ) ) {
-                $id = $membership->id;
-                $user_id = $membership->user_id;
-                $product_id = $membership->product_id;
-                $order_id = $membership->order_id;
-                $membership_starts = $membership->membership_starts;
-                $membership_ends = $membership->memberships_ends;
-                $note = $membership->note;
+                $id = $membership['id'];
+                $user_id = $membership['user_id'];
+                $product_id = $membership['product_id'];
+                $order_id = $membership['order_id'];
+                $membership_starts = $membership['membership_starts'];
+                $membership_ends = $membership['memberships_ends'];
+                $note = $membership['note'];
             } else {
                 $id = 0;
             }

@@ -116,8 +116,8 @@ class PandamusRex_Memberships_Admin {
         $user_id = 0;
         $product_id = 0;
         $order_id = 0;
-        $membership_starts = $start_dt->format( "d-m-Y" );
-        $membership_ends = $membership_ends = $ends_dt->format( "d-m-Y" );
+        $membership_starts = $start_dt->format( "Y-m-d" );
+        $membership_ends = $ends_dt->format( "Y-m-d" );
         $note = __( 'Membership added manually', 'pandamusrex-memberships' );
 
         // If we have been passed a membership ID in $_GET[ 'edit_id' ]

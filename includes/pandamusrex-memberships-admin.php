@@ -75,7 +75,6 @@ class PandamusRex_Memberships_Admin {
         } else {
             foreach ( $memberships as $membership ) {
                 echo '<tr>';
-                echo '<td>' . esc_html( $membership['id'] ) . '</td>';
                 echo '<td>';
                 $user = get_user_by( 'id', $membership['user_id'] );
                 $this->echo_user( $user );
@@ -84,6 +83,7 @@ class PandamusRex_Memberships_Admin {
                 echo esc_html__( 'ID:', 'pandamusrex-memberships' );
                 echo ' ';
                 echo esc_html( $membership['id'] );
+                echo ' | ';
                 echo '</span>';
                 echo '<span class="edit">';
                 echo '<a href="#">'; // TODO including id and action

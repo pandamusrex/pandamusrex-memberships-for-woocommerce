@@ -46,7 +46,7 @@ class PandamusRex_Memberships_Admin {
     public function echo_memberships_page() {
         if ( ! function_exists( 'wc_get_logger' ) ) {
             wp_admin_notice(
-                __( 'PandamusRex Memberships for WooCommerce requires the WooCommerce plugin to be active.', 'pandamusrex-memberships' )
+                __( 'PandamusRex Memberships for WooCommerce requires the WooCommerce plugin to be active.', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -133,8 +133,6 @@ class PandamusRex_Memberships_Admin {
     }
 
     public function echo_delete_confirmation_page() {
-        // TODO Check nonce
-
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">';
         esc_html_e( 'Delete Membership', 'pandamusrex-memberships' );
@@ -164,7 +162,7 @@ class PandamusRex_Memberships_Admin {
     public function single_membership_page() {
         if ( ! function_exists( 'wc_get_logger' ) ) {
             wp_admin_notice(
-                __( 'PandamusRex Memberships for WooCommerce requires the WooCommerce plugin to be active.', 'pandamusrex-memberships' )
+                __( 'PandamusRex Memberships for WooCommerce requires the WooCommerce plugin to be active.', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -575,8 +573,6 @@ class PandamusRex_Memberships_Admin {
             );
             return;
         }
-
-        // CHECK NONCE
 
         // Grab some data from the membership
         $user_id = $membership['user_id'];

@@ -386,8 +386,6 @@ class PandamusRex_Memberships_Admin {
         echo '</tbody>';
         echo '</table>';
 
-        echo '</form>';
-
         echo '<p class="submit">';
         $button_label = __( 'Save Changes', 'pandamusrex-memberships' );
         if ( $id == 0 ) {
@@ -397,6 +395,8 @@ class PandamusRex_Memberships_Admin {
             $button_label .
             '" />';
         echo '</p>';
+
+        echo '</form>';
 
         echo '</div>';
     }

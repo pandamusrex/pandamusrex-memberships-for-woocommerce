@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PandamusRex Memberships for WooCommerce
- * Version: 1.1.2
+ * Version: 1.1.3
  * Plugin URI: https://github.com/pandamusrex/pandamusrex-memberships-for-woocommerce
  * Description: Buying this product gets you a membership!
  * Author: PandamusRex
@@ -249,6 +249,10 @@ class PandamusRex_Memberships {
                     'Created for buyer automatically on payment complete'
                 );
 
+                if ( is_wp_error( $result ) ) {
+                    wc_get_logger()->debug( "Unable to add membership for user_id $buyer_user_id for order_id $order_id and product_id $product_id" );
+                }
+
                 // Now, anyone else
                 // e.g. if quantity = 3
                 // look in order meta for
@@ -258,18 +262,25 @@ class PandamusRex_Memberships {
                     $meta_key = '_pandamus_members_' . $product_id . '_recipient_email_' . $index;
                     // Find or create the user based on the order meta
                     $user_id = -1;
-                    $recipient_email = get_post_meta( $order_id, $meta_key, false );
+                    $recipient_email = get_post_meta( $order_id, $meta_key, true ); // true: single
                     if ( is_email( $recipient_email ) ) {
                         $user_id = PandamusRex_Memberships_User_Helper::find_or_create_user( $recipient_email );
+                    } else {
+                        wc_get_logger()->debug( "Unable to create user for recipient $index for product_id $product_id for order_id $order_id - invalid email $recipient_email" );
+                        continue; // don't attempt to add membership - it can be created manually later
                     }
+
                     $result = PandamusRex_Memberships_Db::addMembershipForUserThatStartsNow(
                         $user_id,
                         $product_id,
                         $order_id,
                         'Created for recipient automatically on payment complete'
                     );
-                }
 
+                    if ( is_wp_error( $result ) ) {
+                        wc_get_logger()->debug( "Unable to add membership for user_id $user_id for order_id $order_id and product_id $product_id" );
+                    }
+                }
             }
         }
     }

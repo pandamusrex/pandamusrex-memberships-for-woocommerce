@@ -33,7 +33,7 @@ class PandamusRex_Memberships_Db {
     public static function getAllMemberships() {
         global $wpdb;
 
-        $sql = 'SELECT * FROM %i ORDER BY membership_ends DESC';
+        $sql = 'SELECT * FROM %i ORDER BY membership_ends DESC, id DESC';
         $vars = [ self::getTableName() ];
         $results = $wpdb->get_results( $wpdb->prepare( $sql, $vars ), ARRAY_A );
 

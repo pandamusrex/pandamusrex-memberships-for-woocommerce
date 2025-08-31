@@ -215,13 +215,17 @@ class PandamusRex_Memberships_Admin {
     }
 
     public function echo_user( $user ) {
-        echo esc_html( '#' .
-            $user->ID .
-            ' - ' .
-            $user->display_name .
-            ' - ' .
-            $user->user_email
-        );
+        if ( $user ) {
+            echo esc_html( '#' .
+                $user->ID .
+                ' - ' .
+                $user->display_name .
+                ' - ' .
+                $user->user_email
+            );
+        } else {
+            echo '-';
+        }
     }
 
     public function echo_user_selector( $preselect_user_id = 0 ) {
@@ -564,6 +568,7 @@ class PandamusRex_Memberships_Admin {
 
         // Grab some data from the membership
         $user_id = $membership['user_id'];
+        $user = get_user_by( 'id', $user_id );
         $membership_starts = $membership['membership_starts'];
         $membership_ends = $membership['membership_ends'];
 
@@ -603,7 +608,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        $this->echo_user( $user_id );
+        $this->echo_user( $user );
         echo '</td>';
         echo '</tr>';
 

@@ -94,7 +94,7 @@ class PandamusRex_Memberships_Admin {
                 echo '<span class="delete">';
                 $delete_url = "?page=pandamusrex_single_membership_page&action=delete&membership_id=" . $membership['id'];
                 // TODO - add nonce
-                echo '<a href="' . $edit_url . '">';
+                echo '<a href="' . $delete_url . '">';
                 echo esc_html__( 'Delete', 'pandamusrex-memberships' );
                 echo '</a>';
                 echo '</span>';
@@ -125,7 +125,7 @@ class PandamusRex_Memberships_Admin {
     }
 
     public function echo_delete_confirmation_page() {
-        // Check nonce
+        // TODO Check nonce
 
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">';

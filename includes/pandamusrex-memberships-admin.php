@@ -587,7 +587,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        echo_esc_html( $id );
+        echo esc_html( $id );
         echo '</td>';
         echo '</tr>';
 
@@ -609,7 +609,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        echo_esc_attr( $membership_starts );
+        echo esc_html( $membership_starts );
         echo '</td>';
         echo '</tr>';
 
@@ -620,7 +620,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        echo_esc_attr( $membership_ends );
+        echo esc_html( $membership_ends );
         echo '</td>';
         echo '</tr>';
 

@@ -107,36 +107,51 @@ class PandamusRex_Memberships_Admin {
     }
 
     public function single_membership_page() {
+        if ( ! function_exists( 'wc_get_logger' ) ) {
+            return;
+        }
+
+        wc_get_logger()->debug( "in single_membership_page" );
+
         // Admin only please
         if ( ! current_user_can( 'manage_options' ) ) {
+            wc_get_logger()->debug( "aborting. current user cannot manage options" );
             return;
         }
 
         // Are we processing a POST?
         if ( isset( $_POST['membership_nonce'] ) && isset( $_POST['id'] ) ) {
+            wc_get_logger()->debug( "in POST processing logic" );
             $id = sanitize_text_field( $_POST['id'] );
             $id = intval( $id );
             if ( ! wp_verify_nonce( $_POST['membership_nonce'], 'membership-' . $id ) ) {
+                wc_get_logger()->debug( "aborting. failed to verify nonce" );
                 return;
             }
 
             // Make sure all fields are in the post
             if ( ! isset( $_POST['user_id'] ) ) {
+                wc_get_logger()->debug( "aborting. user_id absent from POST" );
                 return;
             }
             if ( ! isset( $_POST['product_id'] ) ) {
+                wc_get_logger()->debug( "aborting. product_id absent from POST" );
                 return;
             }
             if ( ! isset( $_POST['order_id'] ) ) {
+                wc_get_logger()->debug( "aborting. order_id absent from POST" );
                 return;
             }
             if ( ! isset( $_POST['membership_starts'] ) ) {
+                wc_get_logger()->debug( "aborting. membership_starts absent from POST" );
                 return;
             }
             if ( ! isset( $_POST['membership_ends'] ) ) {
+                wc_get_logger()->debug( "aborting. membership_ends absent from POST" );
                 return;
             }
             if ( ! isset( $_POST['note'] ) ) {
+                wc_get_logger()->debug( "aborting. note absent from POST" );
                 return;
             }
 
@@ -152,6 +167,7 @@ class PandamusRex_Memberships_Admin {
 
             // Save it
             if ( $id == 0 ) {
+                wc_get_logger()->debug( "attempting save of new membership" );
                 $result = PandamusRex_Memberships_Db::addMembershipForUser(
                     $user_id,
                     $product_id,
@@ -163,12 +179,16 @@ class PandamusRex_Memberships_Admin {
 
                 // TODO Error handling
                 $id = $result['id'];
+                $last_error = $result['last_error'];
+                wc_get_logger()->debug( "addMembershipForUser returned id = $id" );
+                wc_get_logger()->debug( "addMembershipForUser returned last_error = $last_error" );
 
                 wp_admin_notice(
                     __( 'Successfully added membership for user', 'pandamusrex-memberships' )
                 );
             } else {
-                PandamusRex_Memberships_Db::updateMembershipForUser(
+                wc_get_logger()->debug( "attempting update of existing membership" );
+                $result = PandamusRex_Memberships_Db::updateMembershipForUser(
                     $id,
                     $user_id,
                     $product_id,
@@ -177,6 +197,9 @@ class PandamusRex_Memberships_Admin {
                     $membership_ends,
                     $note
                 );
+
+                $last_error = $result['last_error'];
+                wc_get_logger()->debug( "updateMembershipForUser returned last_error = $last_error" );
 
                 // TODO Error handling
                 wp_admin_notice(

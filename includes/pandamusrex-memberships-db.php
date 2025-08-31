@@ -174,7 +174,7 @@ class PandamusRex_Memberships_Db {
             ]
         );
 
-        $data[ 'id' ] = $membership_id;
+        $data[ 'last_error' ] = $wpdb->last_error;
 
         return $data;
     }

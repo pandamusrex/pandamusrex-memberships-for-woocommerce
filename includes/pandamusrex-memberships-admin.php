@@ -132,7 +132,7 @@ class PandamusRex_Memberships_Admin {
                 $product_id = $membership['product_id'];
                 $order_id = $membership['order_id'];
                 $membership_starts = $membership['membership_starts'];
-                $membership_ends = $membership['memberships_ends'];
+                $membership_ends = $membership['membership_ends'];
                 $note = $membership['note'];
             } else {
                 $id = 0;

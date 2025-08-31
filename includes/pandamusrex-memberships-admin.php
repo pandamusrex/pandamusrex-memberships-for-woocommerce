@@ -189,13 +189,13 @@ class PandamusRex_Memberships_Admin {
         // If edit, echo edit form
         // If delete, echo delete confirmation form
         if ( isset( $_GET['action'] ) ) {
-            $action = $_GET['action'];
-            if ( $post_action == 'edit' ) {
+            $get_action = $_GET['action'];
+            if ( $get_action == 'edit' ) {
                 $this->echo_edit_form();
                 return;
             }
 
-            if ( $post_action == 'delete' ) {
+            if ( $get_action == 'delete' ) {
                 $this->echo_delete_confirmation_form();
                 return;
             }

@@ -86,13 +86,13 @@ class PandamusRex_Memberships_Admin {
                 echo ' | ';
                 echo '</span>';
                 echo '<span class="edit">';
-                $edit_url = "?page=pandamusrex_memberships_page&action=edit&membership_id=" . $membership['id'];
+                $edit_url = "?page=pandamusrex_single_membership_page&action=edit&membership_id=" . $membership['id'];
                 echo '<a href="' . $edit_url . '">';
                 echo esc_html__( 'Edit', 'pandamusrex-memberships' );
                 echo '</a>';
                 echo ' | ';
                 echo '<span class="delete">';
-                $delete_url = "?page=pandamusrex_memberships_page&action=delete&membership_id=" . $membership['id'];
+                $delete_url = "?page=pandamusrex_single_membership_page&action=delete&membership_id=" . $membership['id'];
                 // TODO - add nonce
                 echo '<a href="' . $edit_url . '">';
                 echo esc_html__( 'Delete', 'pandamusrex-memberships' );

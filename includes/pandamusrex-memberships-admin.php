@@ -55,7 +55,6 @@ class PandamusRex_Memberships_Admin {
         echo '<table class="wp-list-table widefat fixed striped table-view-list">';
         echo '<thead>';
         echo '<tr>';
-        echo '<th scope="col" class="manage-column">' . esc_html__( 'ID', 'pandamusrex-memberships' ) . '</th>';
         echo '<th scope="col" class="manage-column">' . esc_html__( 'User', 'pandamusrex-memberships' ) . '</th>';
         echo '<th scope="col" class="manage-column">' . esc_html__( 'Product', 'pandamusrex-memberships' ) . '</th>';
         echo '<th scope="col" class="manage-column">' . esc_html__( 'Order', 'pandamusrex-memberships' ) . '</th>';
@@ -69,7 +68,7 @@ class PandamusRex_Memberships_Admin {
 
         if ( empty( $memberships ) ) {
             echo '<tr class="no-items">';
-            echo '<td class="colspanchange" colspan="7">';
+            echo '<td class="colspanchange" colspan="6">';
             esc_html_e( 'No memberships found.', 'pandamusrex-memberships' );
             echo '</td>';
             echo '</tr>';
@@ -81,6 +80,11 @@ class PandamusRex_Memberships_Admin {
                 $user = get_user_by( 'id', $membership['user_id'] );
                 $this->echo_user( $user );
                 echo '<div class="row-actions">';
+                echo '<span class="id">';
+                echo esc_html__( 'ID:', 'pandamusrex-memberships' );
+                echo ' ';
+                echo esc_html( $membership['id'] );
+                echo '</span>';
                 echo '<span class="edit">';
                 echo '<a href="#">'; // TODO including id and action
                 echo_esc_html__( 'Edit', 'pandamusrex-memberships' );
@@ -104,7 +108,6 @@ class PandamusRex_Memberships_Admin {
 
         echo '<tfoot>';
         echo '<tr>';
-        echo '<th scope="col" class="manage-column">' . esc_html__( 'ID', 'pandamusrex-memberships' ) . '</th>';
         echo '<th scope="col" class="manage-column">' . esc_html__( 'User', 'pandamusrex-memberships' ) . '</th>';
         echo '<th scope="col" class="manage-column">' . esc_html__( 'Product', 'pandamusrex-memberships' ) . '</th>';
         echo '<th scope="col" class="manage-column">' . esc_html__( 'Order', 'pandamusrex-memberships' ) . '</th>';

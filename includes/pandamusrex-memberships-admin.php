@@ -87,12 +87,12 @@ class PandamusRex_Memberships_Admin {
                 echo '</span>';
                 echo '<span class="edit">';
                 echo '<a href="#">'; // TODO including id and action
-                echo_esc_html__( 'Edit', 'pandamusrex-memberships' );
+                echo esc_html__( 'Edit', 'pandamusrex-memberships' );
                 echo '</a>';
                 echo ' | ';
                 echo '<span class="delete">';
                 echo '<a href="#">'; // TODO incl id action and nonce
-                echo_esc_html__( 'Delete', 'pandamusrex-memberships' );
+                echo esc_html__( 'Delete', 'pandamusrex-memberships' );
                 echo '</a>';
                 echo '</span>';
                 echo '</div>';

@@ -116,8 +116,8 @@ class PandamusRex_Memberships_Admin {
         $user_id = 0;
         $product_id = 0;
         $order_id = 0;
-        $membership_starts = $start_dt->format( "Y-m-d" );
-        $membership_ends = $membership_ends = $ends_dt->format( "Y-m-d" );
+        $membership_starts = $start_dt->format( "d-m-Y" );
+        $membership_ends = $membership_ends = $ends_dt->format( "d-m-Y" );
         $note = __( 'Membership added manually', 'pandamusrex-memberships' );
 
         // If we have been passed a membership ID in $_GET[ 'edit_id' ]
@@ -195,7 +195,7 @@ class PandamusRex_Memberships_Admin {
         foreach ( $loop_users as $loop_user ) {
             $loop_user_id = $loop_user->ID;
             $selected = ( $loop_user_id == $user_id ) ? 'selected' : '';
-            echo '<option value="' . esc_attr( $loop_user_id ) . ' ' . $selected . '">';
+            echo '<option value="' . esc_attr( $loop_user_id ) . '" ' . $selected . '>';
             echo esc_html( '#' . $loop_user_id . ' - ' . $loop_user->display_name . ' - ' . $loop_user->user_email );
             echo '</option>';
         }
@@ -223,7 +223,7 @@ class PandamusRex_Memberships_Admin {
         foreach ( $loop_products as $loop_product ) {
             $loop_product_id = $loop_product->get_id();
             $selected = ( $loop_product_id == $product_id ) ? 'selected' : '';
-            echo '<option value="' . esc_attr( $loop_product_id ) . ' ' . $selected . '">';
+            echo '<option value="' . esc_attr( $loop_product_id ) . '" ' . $selected . '>';
             echo esc_html( '#' . $loop_product_id . ' - ' . $loop_product->get_title() );
             echo '</option>';
         }
@@ -256,7 +256,7 @@ class PandamusRex_Memberships_Admin {
                 $loop_customer_name = $loop_customer->get_first_name() . " " . $loop_customer->get_last_name();
                 $loop_customer_email = $loop_customer->get_email();
                 $selected = ( $loop_order_id == $order_id ) ? 'selected' : '';
-                echo '<option value="' . esc_attr( $loop_order_id ) . ' ' . $selected . '">';
+                echo '<option value="' . esc_attr( $loop_order_id ) . '" ' . $selected . '>';
                 echo esc_html( '#' . $loop_order_id . ' - ' . $loop_customer_name . ' - ' . $loop_customer_email . ' - ' . $formatted_loop_order_date );
                 echo '</option>';
             }

@@ -30,22 +30,6 @@ class PandamusRex_Memberships_Db {
         dbDelta( $sql );
     }
 
-    // Database stores as YYYY-MM-DD
-    // We want the GUI to show MM/DD/YYYY
-    protected static function convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd ) {
-        if ( strlen( $yyyy_mm_dd ) < 10 ) {
-            return $yyyy_mm_dd;
-        }
-
-        // 0123456789
-        // YYYY-MM-DD
-        $mm = substr( $yyyy_mm_dd, 5, 2 );
-        $dd = substr( $yyyy_mm_dd, 8, 2 );
-        $yy = substr( $yyyy_mm_dd, 0, 4 );
-
-        return $mm . '/' . $dd . '/' . $yy;
-    }
-
     public static function getAllMemberships() {
         global $wpdb;
 
@@ -54,15 +38,15 @@ class PandamusRex_Memberships_Db {
         $results = $wpdb->get_results( $wpdb->prepare( $sql, $vars ), ARRAY_A );
 
         // Keep just the date for start, end
-        // DB has YYYY-MM-DD HH:MM:SS.ffffff, so convert it to MM/DD/YYYY
+        // DB has YYYY-MM-DD HH:MM:SS.ffffff, so cut off the time
         foreach ( $results as &$result ) {
             if ( array_key_exists( 'membership_starts', $result ) ) {
                 $yyyy_mm_dd = $result[ 'membership_starts' ];
-                $result[ 'membership_starts' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
+                $result[ 'membership_starts' ] = substr( $yyyy_mm_dd, 0, 10 );
             }
             if ( array_key_exists( 'membership_ends', $result ) ) {
                 $yyyy_mm_dd = $result[ 'membership_ends' ];
-                $result[ 'membership_ends' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
+                $result[ 'membership_ends' ] = substr( $yyyy_mm_dd, 0, 10 );
             }
         }
         unset( $result );
@@ -78,15 +62,15 @@ class PandamusRex_Memberships_Db {
         $results = $wpdb->get_results( $wpdb->prepare( $sql, $vars ), ARRAY_A );
 
         // Keep just the date for start, end
-        // DB has YYYY-MM-DD HH:MM:SS.ffffff, so convert it to MM/DD/YYYY
+        // DB has YYYY-MM-DD HH:MM:SS.ffffff, so cut off the time
         foreach ( $results as &$result ) {
             if ( array_key_exists( 'membership_starts', $result ) ) {
                 $yyyy_mm_dd = $result[ 'membership_starts' ];
-                $result[ 'membership_starts' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
+                $result[ 'membership_starts' ] = substr( $yyyy_mm_dd, 0, 10 );
             }
             if ( array_key_exists( 'membership_ends', $result ) ) {
                 $yyyy_mm_dd = $result[ 'membership_ends' ];
-                $result[ 'membership_ends' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
+                $result[ 'membership_ends' ] = substr( $yyyy_mm_dd, 0, 10 );
             }
         }
         unset( $result );
@@ -203,15 +187,15 @@ class PandamusRex_Memberships_Db {
         $results = $wpdb->get_results( $wpdb->prepare( $sql, $vars ), ARRAY_A );
 
         // Keep just the date for start, end
-        // DB has YYYY-MM-DD HH:MM:SS.ffffff, so convert it to MM/DD/YYYY
+        // DB has YYYY-MM-DD HH:MM:SS.ffffff, so cut off the time
         foreach ( $results as &$result ) {
             if ( array_key_exists( 'membership_starts', $result ) ) {
                 $yyyy_mm_dd = $result[ 'membership_starts' ];
-                $result[ 'membership_starts' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
+                $result[ 'membership_starts' ] = substr( $yyyy_mm_dd, 0, 10 );
             }
             if ( array_key_exists( 'membership_ends', $result ) ) {
                 $yyyy_mm_dd = $result[ 'membership_ends' ];
-                $result[ 'membership_ends' ] = self::convertYYYYMMDDToMMDDYYYY( $yyyy_mm_dd );
+                $result[ 'membership_ends' ] = substr( $yyyy_mm_dd, 0, 10 );
             }
         }
         unset( $result );

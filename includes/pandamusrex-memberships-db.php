@@ -102,7 +102,7 @@ class PandamusRex_Memberships_Db {
             'note' => $note
         ];
 
-        $wpdb->insert(
+        $result = $wpdb->insert(
             self::getTableName(),
             $data,
             [

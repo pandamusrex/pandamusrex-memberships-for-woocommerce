@@ -298,7 +298,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        echo '<select>';
+        echo '<select name="user_id" id="user_id">';
         $loop_users = get_users();
         foreach ( $loop_users as $loop_user ) {
             $loop_user_id = $loop_user->ID;
@@ -318,7 +318,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        echo '<select>';
+        echo '<select name="product_id" id="product_id">';
         $args = array(
             'limit'      => -1,
             'status'     => 'publish',
@@ -346,7 +346,7 @@ class PandamusRex_Memberships_Admin {
         echo '</label>';
         echo '</th>';
         echo '<td>';
-        echo '<select>';
+        echo '<select name="order_id" id="order_id">';
         echo '<option value="0">';
         echo esc_html( 'None', 'pandamusrex-memberships' );
         echo '</option>';

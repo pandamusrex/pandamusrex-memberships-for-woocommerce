@@ -205,7 +205,7 @@ class PandamusRex_Memberships_Admin {
             }
 
             wp_admin_notice(
-                __( 'Invalid POST action', 'pandamusrex-memberships' )
+                __( 'Invalid POST action', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -227,7 +227,7 @@ class PandamusRex_Memberships_Admin {
             }
 
             wp_admin_notice(
-                __( 'Invalid GET action', 'pandamusrex-memberships' )
+                __( 'Invalid GET action', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -427,7 +427,7 @@ class PandamusRex_Memberships_Admin {
     public function echo_edit_form() {
         if ( ! isset( $_GET['membership_id'] ) ) {
             wp_admin_notice(
-                __( 'Invalid GET request - edit action requires membership_id', 'pandamusrex-memberships' )
+                __( 'Invalid GET request - edit action requires membership_id', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -437,7 +437,7 @@ class PandamusRex_Memberships_Admin {
         
         if ( intval( $id ) == 0 ) {
             wp_admin_notice(
-                __( 'Invalid GET request - edit action - non-numeric membership_id', 'pandamusrex-memberships' )
+                __( 'Invalid GET request - edit action - non-numeric membership_id', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -447,7 +447,7 @@ class PandamusRex_Memberships_Admin {
         $membership = PandamusRex_Memberships_Db::getMembershipByID( $id );
         if ( empty( $membership ) ) {
             wp_admin_notice(
-                __( 'Invalid GET request - edit action - unknown membership_id', 'pandamusrex-memberships' )
+                __( 'Invalid GET request - edit action - unknown membership_id', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -562,7 +562,7 @@ class PandamusRex_Memberships_Admin {
     public function echo_delete_confirmation_form() {
         if ( ! isset( $_GET['membership_id'] ) ) {
             wp_admin_notice(
-                __( 'Invalid POST request - do_delete action requires membership_id in query string', 'pandamusrex-memberships' )
+                __( 'Invalid POST request - do_delete action requires membership_id in query string', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -571,7 +571,7 @@ class PandamusRex_Memberships_Admin {
         $id = sanitize_text_field( $_GET['membership_id'] );
         if ( intval( $id ) == 0 ) {
             wp_admin_notice(
-                __( 'Invalid POST request - do_delete action - non-numeric membership_id in query string', 'pandamusrex-memberships' )
+                __( 'Invalid POST request - do_delete action - non-numeric membership_id in query string', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -581,7 +581,7 @@ class PandamusRex_Memberships_Admin {
         $membership = PandamusRex_Memberships_Db::getMembershipByID( $id );
         if ( empty( $membership ) ) {
             wp_admin_notice(
-                __( 'Invalid POST request - do_delete action - unknown membership_id in query string', 'pandamusrex-memberships' )
+                __( 'Invalid POST request - do_delete action - unknown membership_id in query string', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -673,7 +673,7 @@ class PandamusRex_Memberships_Admin {
         // Check membership_nonce in POST (membership-0)
         if ( ! wp_verify_nonce( $_POST['membership_nonce'], 'membership-0' ) ) {
             wp_admin_notice(
-                __( 'Invalid POST request - do_create action - bad nonce in POST data', 'pandamusrex-memberships' )
+                __( 'Invalid POST request - do_create action - bad nonce in POST data', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -684,7 +684,7 @@ class PandamusRex_Memberships_Admin {
         foreach ( $required_fields as $required_field ) {
             if (! isset( $_POST[$required_field] ) ) {
                 wp_admin_notice(
-                    __( 'Invalid POST request - do_create action - incomplete POST data', 'pandamusrex-memberships' )
+                    __( 'Invalid POST request - do_create action - incomplete POST data', 'pandamusrex-memberships' ),
                     [ 'error' ]
                 );
                 return;
@@ -730,7 +730,7 @@ class PandamusRex_Memberships_Admin {
         // Get id from POST
         if ( ! isset( $_POST['id'] ) ) {
             wp_admin_notice(
-                __( 'Invalid POST request - do_delete action - no id in POST data', 'pandamusrex-memberships' )
+                __( 'Invalid POST request - do_delete action - no id in POST data', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -741,7 +741,7 @@ class PandamusRex_Memberships_Admin {
         // Check membership_nonce in POST (membership-$id)
         if ( ! wp_verify_nonce( $_POST['membership_nonce'], 'membership-' . $id ) ) {
             wp_admin_notice(
-                __( 'Invalid POST request - do_delete action - bad nonce in POST data', 'pandamusrex-memberships' )
+                __( 'Invalid POST request - do_delete action - bad nonce in POST data', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -771,7 +771,7 @@ class PandamusRex_Memberships_Admin {
         // Get id from POST
         if ( ! isset( $_POST['id'] ) ) {
             wp_admin_notice(
-                __( 'Invalid POST request - do_update action - no id in POST data', 'pandamusrex-memberships' )
+                __( 'Invalid POST request - do_update action - no id in POST data', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -782,7 +782,7 @@ class PandamusRex_Memberships_Admin {
         // Check membership_nonce in POST (membership-$id)
         if ( ! wp_verify_nonce( $_POST['membership_nonce'], 'membership-' . $id ) ) {
             wp_admin_notice(
-                __( 'Invalid POST request - do_update action - bad nonce in POST data', 'pandamusrex-memberships' )
+                __( 'Invalid POST request - do_update action - bad nonce in POST data', 'pandamusrex-memberships' ),
                 [ 'error' ]
             );
             return;
@@ -792,7 +792,7 @@ class PandamusRex_Memberships_Admin {
         foreach ( $required_fields as $required_field ) {
             if (! isset( $_POST[$required_field] ) ) {
                 wp_admin_notice(
-                    __( 'Invalid POST request - do_update action - incomplete POST data', 'pandamusrex-memberships' )
+                    __( 'Invalid POST request - do_update action - incomplete POST data', 'pandamusrex-memberships' ),
                     [ 'error' ]
                 );
                 return;

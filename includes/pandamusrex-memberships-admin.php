@@ -648,7 +648,7 @@ class PandamusRex_Memberships_Admin {
         echo '</div>';
     }
 
-    public function do_create() {
+    public function echo_do_create() {
         // Check membership_nonce in POST (membership-0)
         if ( ! wp_verify_nonce( $_POST['membership_nonce'], 'membership-0' ) ) {
             wp_admin_notice(
@@ -700,7 +700,7 @@ class PandamusRex_Memberships_Admin {
         $this->echo_memberships_page();
     }
 
-    public function do_delete() {
+    public function echo_do_delete() {
         // Get id from POST
         if ( ! isset( $_POST['id'] ) ) {
             wp_admin_notice(
@@ -734,7 +734,7 @@ class PandamusRex_Memberships_Admin {
         $this->echo_memberships_page();
     }
 
-    public function do_update() {
+    public function echo_do_update() {
         // Get id from POST
         if ( ! isset( $_POST['id'] ) ) {
             wp_admin_notice(

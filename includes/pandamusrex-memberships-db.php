@@ -114,11 +114,11 @@ class PandamusRex_Memberships_Db {
                 '%s'
             ]
         );
+        if ( false === $result ) {
+            return new WP_Error( 'pandamusrex-memberships', $wpdb->last_error );
+        }
 
-        $data[ 'id' ] = $wpdb->insert_id;
-        $data[ 'last_error' ] = $wpdb->last_error;
-
-        return $data;
+        return $wpdb->insert_id;
     }
 
     public static function addMembershipForUserThatStartsNow( $user_id, $product_id, $order_id, $note ) {
@@ -133,7 +133,7 @@ class PandamusRex_Memberships_Db {
         $membership_ends = $ends_dt->format( "Y-m-d 23:59:59" );
         // wc_get_logger()->debug( "Ends: $membership_ends" );
 
-        $result = self::addMembershipForUser(
+        return self::addMembershipForUser(
             $user_id,
             $product_id,
             $order_id,
@@ -155,7 +155,7 @@ class PandamusRex_Memberships_Db {
             'note' => $note
         ];
 
-        $wpdb->update(
+        $result = $wpdb->update(
             self::getTableName(),
             $data,
             [
@@ -174,9 +174,11 @@ class PandamusRex_Memberships_Db {
             ]
         );
 
-        $data[ 'last_error' ] = $wpdb->last_error;
+        if ( false === $result ) {
+            return new WP_Error( 'pandamusrex-memberships', $wpdb->last_error );
+        }
 
-        return $data;
+        return true;
     }
 
     public static function getMembershipByID( $membership_id ) {
@@ -210,7 +212,7 @@ class PandamusRex_Memberships_Db {
     public static function deleteMembership( $membership_id ) {
         global $wpdb;
 
-        $wpdb->delete(
+        $result = $wpdb->delete(
             self::getTableName(),
             [
                 'id' => $membership_id
@@ -220,6 +222,10 @@ class PandamusRex_Memberships_Db {
             ]
         );
 
-        return TRUE;
+        if ( false === $result ) {
+            return new WP_Error( 'pandamusrex-memberships', $wpdb->last_error );
+        }
+
+        return true;
     }
 }

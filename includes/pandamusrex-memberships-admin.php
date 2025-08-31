@@ -688,9 +688,13 @@ class PandamusRex_Memberships_Admin {
             $note
         );
 
-        // TODO Better error handling
-        $id = $result['id'];
-        $last_error = $result['last_error'];
+        if ( is_wp_error( $result ) ) {
+            wp_admin_notice(
+                $result->get_error_message(),
+                [ 'error' ]
+            );
+            return;
+        }
 
         wp_admin_notice(
             __( 'Successfully added membership', 'pandamusrex-memberships' )
@@ -722,9 +726,15 @@ class PandamusRex_Memberships_Admin {
         }
 
         // Do the delete
-        PandamusRex_Memberships_Db::deleteMembership( $id );
+        $result = PandamusRex_Memberships_Db::deleteMembership( $id );
 
-        // TODO error handling
+        if ( is_wp_error( $result ) ) {
+            wp_admin_notice(
+                $result->get_error_message(),
+                [ 'error' ]
+            );
+            return;
+        }
 
         wp_admin_notice(
             __( 'Successfully deleted membership', 'pandamusrex-memberships' )
@@ -785,7 +795,13 @@ class PandamusRex_Memberships_Admin {
             $note
         );
 
-        $last_error = $result['last_error'];
+        if ( is_wp_error( $result ) ) {
+            wp_admin_notice(
+                $result->get_error_message(),
+                [ 'error' ]
+            );
+            return;
+        }
 
         wp_admin_notice(
             __( 'Successfully updated membership', 'pandamusrex-memberships' )

@@ -4,7 +4,7 @@ Donate link: https://pandamusrex.com/
 Tags: woocommerce
 Requires at least: 6.4
 Tested up to: 6.8
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 Requires PHP: 7.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -22,6 +22,9 @@ Buying this product gets you a membership!
 Yes!
 
 == Changelog ==
+
+= 1.1.5 =
+* Call admin notice correctly
 
 = 1.1.4 =
 * Insert missing commas in calls to wp_admin_notice that were causing unwanted behavior

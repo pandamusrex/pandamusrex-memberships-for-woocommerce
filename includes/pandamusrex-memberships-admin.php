@@ -47,7 +47,7 @@ class PandamusRex_Memberships_Admin {
         if ( ! function_exists( 'wc_get_logger' ) ) {
             wp_admin_notice(
                 __( 'PandamusRex Memberships for WooCommerce requires the WooCommerce plugin to be active.', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -176,7 +176,7 @@ class PandamusRex_Memberships_Admin {
         if ( ! function_exists( 'wc_get_logger' ) ) {
             wp_admin_notice(
                 __( 'PandamusRex Memberships for WooCommerce requires the WooCommerce plugin to be active.', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -206,7 +206,7 @@ class PandamusRex_Memberships_Admin {
 
             wp_admin_notice(
                 __( 'Invalid POST action', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -228,7 +228,7 @@ class PandamusRex_Memberships_Admin {
 
             wp_admin_notice(
                 __( 'Invalid GET action', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -428,7 +428,7 @@ class PandamusRex_Memberships_Admin {
         if ( ! isset( $_GET['membership_id'] ) ) {
             wp_admin_notice(
                 __( 'Invalid GET request - edit action requires membership_id', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -438,7 +438,7 @@ class PandamusRex_Memberships_Admin {
         if ( intval( $id ) == 0 ) {
             wp_admin_notice(
                 __( 'Invalid GET request - edit action - non-numeric membership_id', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -448,7 +448,7 @@ class PandamusRex_Memberships_Admin {
         if ( empty( $membership ) ) {
             wp_admin_notice(
                 __( 'Invalid GET request - edit action - unknown membership_id', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -563,7 +563,7 @@ class PandamusRex_Memberships_Admin {
         if ( ! isset( $_GET['membership_id'] ) ) {
             wp_admin_notice(
                 __( 'Invalid POST request - do_delete action requires membership_id in query string', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -572,7 +572,7 @@ class PandamusRex_Memberships_Admin {
         if ( intval( $id ) == 0 ) {
             wp_admin_notice(
                 __( 'Invalid POST request - do_delete action - non-numeric membership_id in query string', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -582,7 +582,7 @@ class PandamusRex_Memberships_Admin {
         if ( empty( $membership ) ) {
             wp_admin_notice(
                 __( 'Invalid POST request - do_delete action - unknown membership_id in query string', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -674,7 +674,7 @@ class PandamusRex_Memberships_Admin {
         if ( ! wp_verify_nonce( $_POST['membership_nonce'], 'membership-0' ) ) {
             wp_admin_notice(
                 __( 'Invalid POST request - do_create action - bad nonce in POST data', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -685,7 +685,7 @@ class PandamusRex_Memberships_Admin {
             if (! isset( $_POST[$required_field] ) ) {
                 wp_admin_notice(
                     __( 'Invalid POST request - do_create action - incomplete POST data', 'pandamusrex-memberships' ),
-                    [ 'error' ]
+                    [ 'type' => 'error' ]
                 );
                 return;
             }
@@ -712,14 +712,14 @@ class PandamusRex_Memberships_Admin {
         if ( is_wp_error( $result ) ) {
             wp_admin_notice(
                 $result->get_error_message(),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
 
         wp_admin_notice(
             __( 'Successfully added membership', 'pandamusrex-memberships' ),
-            [ 'success' ]
+            [ 'type' => 'success' ]
         );
     
         // Wrap up by echoing the complete list
@@ -731,7 +731,7 @@ class PandamusRex_Memberships_Admin {
         if ( ! isset( $_POST['id'] ) ) {
             wp_admin_notice(
                 __( 'Invalid POST request - do_delete action - no id in POST data', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -742,7 +742,7 @@ class PandamusRex_Memberships_Admin {
         if ( ! wp_verify_nonce( $_POST['membership_nonce'], 'membership-' . $id ) ) {
             wp_admin_notice(
                 __( 'Invalid POST request - do_delete action - bad nonce in POST data', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -753,14 +753,14 @@ class PandamusRex_Memberships_Admin {
         if ( is_wp_error( $result ) ) {
             wp_admin_notice(
                 $result->get_error_message(),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
 
         wp_admin_notice(
             __( 'Successfully deleted membership', 'pandamusrex-memberships' ),
-            [ 'success' ]
+            [ 'type' => 'success' ]
         );
     
         // Wrap up by echoing the complete list
@@ -772,7 +772,7 @@ class PandamusRex_Memberships_Admin {
         if ( ! isset( $_POST['id'] ) ) {
             wp_admin_notice(
                 __( 'Invalid POST request - do_update action - no id in POST data', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -783,7 +783,7 @@ class PandamusRex_Memberships_Admin {
         if ( ! wp_verify_nonce( $_POST['membership_nonce'], 'membership-' . $id ) ) {
             wp_admin_notice(
                 __( 'Invalid POST request - do_update action - bad nonce in POST data', 'pandamusrex-memberships' ),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
@@ -793,7 +793,7 @@ class PandamusRex_Memberships_Admin {
             if (! isset( $_POST[$required_field] ) ) {
                 wp_admin_notice(
                     __( 'Invalid POST request - do_update action - incomplete POST data', 'pandamusrex-memberships' ),
-                    [ 'error' ]
+                    [ 'type' => 'error' ]
                 );
                 return;
             }
@@ -821,14 +821,14 @@ class PandamusRex_Memberships_Admin {
         if ( is_wp_error( $result ) ) {
             wp_admin_notice(
                 $result->get_error_message(),
-                [ 'error' ]
+                [ 'type' => 'error' ]
             );
             return;
         }
 
         wp_admin_notice(
             __( 'Successfully updated membership', 'pandamusrex-memberships' ),
-            [ 'success' ]
+            [ 'type' => 'success' ]
         );
 
         // Wrap up by echoing the complete list

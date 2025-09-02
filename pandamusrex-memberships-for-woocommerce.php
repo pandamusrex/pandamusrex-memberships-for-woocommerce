@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PandamusRex Memberships for WooCommerce
- * Version: 1.2.0
+ * Version: 1.2.1
  * Plugin URI: https://github.com/pandamusrex/pandamusrex-memberships-for-woocommerce
  * Description: Buying this product gets you a membership!
  * Author: PandamusRex
@@ -56,6 +56,7 @@ class PandamusRex_Memberships {
 
         add_action( 'woocommerce_before_order_notes', [ $this, 'custom_checkout_fields' ] );
         add_action( 'woocommerce_checkout_process', [ $this, 'validate_custom_checkout_fields' ] );
+        add_action( 'woocommerce_checkout_update_order_meta', [ $this, 'custom_checkout_fields_update_order_meta' ] );
     }
 
     public function add_meta_box() {
@@ -300,7 +301,10 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
-                $show_div = true;
+                $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
+                if ( $prod_incl_membership ) {
+                    $show_div = true;
+                }
             }
         }
 
@@ -311,7 +315,7 @@ class PandamusRex_Memberships {
         echo '<div id="pandamusrex_memberships_recipients_fields">';
         echo '<h3>';
         echo esc_html__(
-            'You have multiple memberships in your cart. Please provide an email address for each recipient besides yourself',
+            'You have multiple items with memberships in your cart. Please provide an email address for each recipient besides yourself',
             'pandamusrex-memberships');
         echo '</h3>';
 
@@ -323,20 +327,23 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
-                for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
-                    $product_id = $product->get_id();
-                    $product_name = $product->get_name();
+                $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
+                if ( $prod_incl_membership ) {
+                    for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
+                        $product_id = $product->get_id();
+                        $product_name = $product->get_name();
 
-                    // e.g. pandamus_members_{product_id}_recipient_email_2
-                    $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
-                    $label = $product_name . " - Membership $index Recipient Email";
-                    woocommerce_form_field( $custom_field_name, array(
-                        'type'        => 'email',
-                        'required'    => true,
-                        'class'       => array('pandamusrex_membership_checkout_recipient form-row-wide'),
-                        'label'       => $label,
-                        'placeholder' => __( '' ),
-                    ), $checkout->get_value( $custom_field_name ) );
+                        // e.g. pandamus_members_{product_id}_recipient_email_2
+                        $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
+                        $label = $product_name . " - Membership $index Recipient Email";
+                        woocommerce_form_field( $custom_field_name, array(
+                            'type'        => 'email',
+                            'required'    => true,
+                            'class'       => array('pandamusrex_membership_checkout_recipient form-row-wide'),
+                            'label'       => $label,
+                            'placeholder' => __( '' ),
+                        ), $checkout->get_value( $custom_field_name ) );
+                    }
                 }
             }
         }
@@ -348,7 +355,7 @@ class PandamusRex_Memberships {
     public function validate_custom_checkout_fields() {
         $all_emails_required_have_been_provided = true;
 
-        // TODO DRY this (duplicate code from above)
+        // TODO DRY this (duplicate code from woocommerce_order_status_changed)
         foreach ( WC()->cart->get_cart() as $cart_item ) {
             $product = apply_filters(
                 'woocommerce_cart_item_product',
@@ -357,23 +364,26 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
-                for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
-                    $product_id = $product->get_id();
+                $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
+                if ( $prod_incl_membership ) {
+                    for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
+                        $product_id = $product->get_id();
 
-                    // e.g. pandamus_members_{product_id}_recipient_email_2
-                    $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
+                        // e.g. pandamus_members_{product_id}_recipient_email_2
+                        $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
 
-                    if ( ! isset( $_POST[$custom_field_name] ) ) {
-                        $all_emails_required_have_been_provided = false;
-                        wc_get_logger()->debug( "in woocommerce_checkout_process, POST recipient email key $custom_field_name is missing" );
-                        continue;
-                    }
+                        if ( ! isset( $_POST[$custom_field_name] ) ) {
+                            $all_emails_required_have_been_provided = false;
+                            wc_get_logger()->debug( "in woocommerce_checkout_process, POST recipient email key $custom_field_name is missing" );
+                            continue;
+                        }
 
-                    $email_provided = $_POST[$custom_field_name];
-                    if ( ! is_email( $email_provided ) ) {
-                        wc_get_logger()->debug( "in woocommerce_checkout_process, POST recipient email key $custom_field_name has an invalid value: $email_provided" );
-                        $all_emails_required_have_been_provided = false;
-                        continue;
+                        $email_provided = $_POST[$custom_field_name];
+                        if ( ! is_email( $email_provided ) ) {
+                            wc_get_logger()->debug( "in woocommerce_checkout_process, POST recipient email key $custom_field_name has an invalid value: $email_provided" );
+                            $all_emails_required_have_been_provided = false;
+                            continue;
+                        }
                     }
                 }
             }
@@ -387,6 +397,32 @@ class PandamusRex_Memberships {
                 ),
                 'error'
             );
+        }
+    }
+
+    // woocommerce_checkout_update_order_meta
+    public function custom_checkout_fields_update_order_meta( $order_id ) {
+        $order = wc_get_order( $order_id );
+
+        // TODO DRY this (duplicate code from woocommerce_order_status_changed)
+        foreach ( $order->get_items() as $order_item ) {
+            $product = $order_item->get_product();
+            if ( $product && $product->exists() && $order_item['quantity'] > 1 ) {
+                $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
+                if ( $prod_incl_membership ) {
+                    for ( $index = 2; $index <= $order_item['quantity']; $index++ ) {
+                        $product_id = $product->get_id();
+
+                        // e.g. pandamus_members_{product_id}_recipient_email_2
+                        $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
+
+                        if ( ! empty( $_POST[$custom_field_name] ) ) {
+                            $order->update_meta_data( $custom_field_name, sanitize_text_field( $_POST[$custom_field_name] ) );
+                            $order->save_meta_data();
+                        }
+                    }
+                }
+            }
         }
     }
 }

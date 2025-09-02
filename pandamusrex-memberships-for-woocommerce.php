@@ -63,10 +63,10 @@ class PandamusRex_Memberships {
         add_meta_box( 'pandamusrex_memberships_sectionid', __( 'Memberships', 'pandamusrex-memberships' ), array( $this, 'meta_box' ), 'product', 'side', 'high' );
     }
 
-    public function meta_box( $product ) {
+    public function meta_box( $post ) {
         echo '<input type="hidden" name="pandamusrex_memberships_nonce" id="pandamusrex_memberships_nonce" value="' . esc_attr( wp_create_nonce( 'pandamusrex_memberships-' . $product->ID ) ) . '" />';
 
-        $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
+        $prod_incl_membership = get_post_meta( $post->ID, '_pandamusrex_prod_incl_membership', false );
 
         echo '<input type="checkbox" id="_pandamusrex_prod_incl_membership" name="_pandamusrex_prod_incl_membership" ' .
             ( $prod_incl_membership ? "checked" : "" ) .
@@ -301,7 +301,7 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
-                $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
+                $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
                     $show_div = true;
                 }
@@ -327,7 +327,7 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
-                $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
+                $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
                     for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
                         $product_id = $product->get_id();
@@ -364,7 +364,7 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
-                $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
+                $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
                     for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
                         $product_id = $product->get_id();
@@ -408,7 +408,7 @@ class PandamusRex_Memberships {
         foreach ( $order->get_items() as $order_item ) {
             $product = $order_item->get_product();
             if ( $product && $product->exists() && $order_item['quantity'] > 1 ) {
-                $prod_incl_membership = get_post_meta( $product->ID, '_pandamusrex_prod_incl_membership', false );
+                $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
                     for ( $index = 2; $index <= $order_item['quantity']; $index++ ) {
                         $product_id = $product->get_id();

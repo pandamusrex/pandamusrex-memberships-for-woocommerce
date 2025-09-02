@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PandamusRex Memberships for WooCommerce
- * Version: 1.1.5
+ * Version: 1.2.0
  * Plugin URI: https://github.com/pandamusrex/pandamusrex-memberships-for-woocommerce
  * Description: Buying this product gets you a membership!
  * Author: PandamusRex
@@ -55,6 +55,7 @@ class PandamusRex_Memberships {
         add_action( 'woocommerce_order_status_changed', [ $this, 'woocommerce_order_status_changed' ], 10, 4 );
 
         add_action( 'woocommerce_before_order_notes', [ $this, 'custom_checkout_fields' ] );
+        add_action( 'woocommerce_checkout_process', [ $this, 'validate_custom_checkout_fields' ] );
     }
 
     public function add_meta_box() {
@@ -326,7 +327,7 @@ class PandamusRex_Memberships {
                     $product_id = $product->get_id();
                     $product_name = $product->get_name();
 
-                    // pandamus_members_{product_id}_recipient_email_2
+                    // e.g. pandamus_members_{product_id}_recipient_email_2
                     $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
                     $label = $product_name . " - Membership $index Recipient Email";
                     woocommerce_form_field( $custom_field_name, array(
@@ -341,6 +342,52 @@ class PandamusRex_Memberships {
         }
 
         echo '</div>';
+    }
+
+    // woocommerce_checkout_process hook
+    public function validate_custom_checkout_fields() {
+        $all_emails_required_have_been_provided = true;
+
+        // TODO DRY this (duplicate code from above)
+        foreach ( WC()->cart->get_cart() as $cart_item ) {
+            $product = apply_filters(
+                'woocommerce_cart_item_product',
+                $cart_item['data'],
+                $cart_item,
+                $cart_item_key
+            );
+            if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
+                for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
+                    $product_id = $product->get_id();
+
+                    // e.g. pandamus_members_{product_id}_recipient_email_2
+                    $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
+
+                    if ( ! isset( $_POST[$custom_field_name] ) ) {
+                        $all_emails_required_have_been_provided = false;
+                        wc_get_logger()->debug( "in woocommerce_checkout_process, POST recipient email key $custom_field_name is missing" );
+                        continue;
+                    }
+
+                    $email_provided = $_POST[$custom_field_name];
+                    if ( ! is_email( $email_provided ) ) {
+                        wc_get_logger()->debug( "in woocommerce_checkout_process, POST recipient email key $custom_field_name has an invalid value: $email_provided" );
+                        $all_emails_required_have_been_provided = false;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if ( ! $all_emails_required_have_been_provided ) {
+            wc_add_notice(
+                esc_html__(
+                    'Please enter a valid email address for each recipient.',
+                    'pandamusrex-memberships'
+                ),
+                'error'
+            );
+        }
     }
 }
 

@@ -265,6 +265,8 @@ class PandamusRex_Memberships {
                     if ( is_email( $recipient_email ) ) {
                         $user_id = PandamusRex_Memberships_User_Helper::find_or_create_user( $recipient_email );
                     } else {
+                        wc_get_logger()->debug( "--------------------------------------------------" );
+                        wc_get_logger()->debug( "order_id: $order_id" );
                         wc_get_logger()->debug( "meta_key: $meta_key" );
                         wc_get_logger()->debug( "recipient_email: $recipient_email" );
                         wc_get_logger()->debug( "Unable to create user for recipient $index for product_id $product_id for order_id $order_id - invalid email $recipient_email" );

@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class PandamusRex_Memberships_User_Helper {
-    public function find_or_create_user( $email ) {
+    public static function find_or_create_user( $email ) {
         $userdata = WP_User::get_data_by( 'email', $email );
         if ( $userdata ) {
             $user = new WP_User();

@@ -258,16 +258,25 @@ class PandamusRex_Memberships {
                 // e.g. if quantity = 3
                 // look in order meta for their emails
                 for ( $index = 2; $index <= $quantity; $index++ ) {
+                    wc_get_logger()->debug( "--------------------------------------------------" );
+                    wc_get_logger()->debug( "order_id: $order_id" );
+
                     $meta_key = $this->get_recipient_email_key( $product_id, $index );
+                    wc_get_logger()->debug( "meta_key: $meta_key" );
+
                     // Find or create the user based on the order meta
                     $user_id = -1;
-                    $recipient_email = get_post_meta( $order_id, $meta_key, true ); // true: single
+                    $recipient_emails = get_post_meta( $order_id, $meta_key, false );
+                    if ( count( $recipient_emails ) > 0 ) {
+                        $recipient_email = $recipient_email[0];
+                        wc_get_logger()->debug( "meta contained recipient_email: $recipient_email" );
+                    } else {
+                        $recipient_email = '';
+                        wc_get_logger()->debug( "meta empty" );
+                    }
                     if ( is_email( $recipient_email ) ) {
                         $user_id = PandamusRex_Memberships_User_Helper::find_or_create_user( $recipient_email );
                     } else {
-                        wc_get_logger()->debug( "--------------------------------------------------" );
-                        wc_get_logger()->debug( "order_id: $order_id" );
-                        wc_get_logger()->debug( "meta_key: $meta_key" );
                         wc_get_logger()->debug( "recipient_email: $recipient_email" );
                         wc_get_logger()->debug( "Unable to create user for recipient $index for product_id $product_id for order_id $order_id - invalid email $recipient_email" );
                         continue; // don't attempt to add membership - it can be created manually later

@@ -4,7 +4,7 @@ Donate link: https://pandamusrex.com/
 Tags: woocommerce
 Requires at least: 6.4
 Tested up to: 6.8
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 Requires PHP: 7.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -22,6 +22,9 @@ Buying this product gets you a membership!
 Yes!
 
 == Changelog ==
+
+= 1.2.2 =
+* Fix meta key generation and use
 
 = 1.2.1 =
 * Write recipient emails into order meta

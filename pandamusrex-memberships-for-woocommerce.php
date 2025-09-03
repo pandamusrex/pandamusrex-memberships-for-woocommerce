@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PandamusRex Memberships for WooCommerce
- * Version: 1.2.1
+ * Version: 1.2.2
  * Plugin URI: https://github.com/pandamusrex/pandamusrex-memberships-for-woocommerce
  * Description: Buying this product gets you a membership!
  * Author: PandamusRex
@@ -241,7 +241,6 @@ class PandamusRex_Memberships {
 
                 // "First" item always goes to buyer
                 // Second or higher item (if present) goes to emails provided during checkout
-                // _pandamus_members_{product_id}_recipient_email_{2..3..4}
 
                 // First, the buyer
                 $result = PandamusRex_Memberships_Db::addMembershipForUserThatStartsNow(
@@ -257,11 +256,9 @@ class PandamusRex_Memberships {
 
                 // Now, anyone else
                 // e.g. if quantity = 3
-                // look in order meta for
-                // _pandamus_members_{product_id}_recipient_email_2
-                // _pandamus_members_{product_id}_recipient_email_3
+                // look in order meta for their emails
                 for ( $index = 2; $index <= $quantity; $index++ ) {
-                    $meta_key = '_pandamus_members_' . $product_id . '_recipient_email_' . $index;
+                    $meta_key = $this->get_recipient_email_key( $product_id, $index );
                     // Find or create the user based on the order meta
                     $user_id = -1;
                     $recipient_email = get_post_meta( $order_id, $meta_key, true ); // true: single
@@ -332,9 +329,7 @@ class PandamusRex_Memberships {
                     for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
                         $product_id = $product->get_id();
                         $product_name = $product->get_name();
-
-                        // e.g. pandamus_members_{product_id}_recipient_email_2
-                        $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
+                        $custom_field_name = $this->get_recipient_email_key( $product_id, $index );
                         $label = $product_name . " - Membership $index Recipient Email";
                         woocommerce_form_field( $custom_field_name, array(
                             'type'        => 'email',
@@ -368,9 +363,7 @@ class PandamusRex_Memberships {
                 if ( $prod_incl_membership ) {
                     for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
                         $product_id = $product->get_id();
-
-                        // e.g. pandamus_members_{product_id}_recipient_email_2
-                        $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
+                        $custom_field_name = $this->get_recipient_email_key( $product_id, $index );
 
                         if ( ! isset( $_POST[$custom_field_name] ) ) {
                             $all_emails_required_have_been_provided = false;
@@ -412,9 +405,7 @@ class PandamusRex_Memberships {
                 if ( $prod_incl_membership ) {
                     for ( $index = 2; $index <= $order_item['quantity']; $index++ ) {
                         $product_id = $product->get_id();
-
-                        // e.g. pandamus_members_{product_id}_recipient_email_2
-                        $custom_field_name = "pandamus_members_{$product_id}_recipient_email_$index";
+                        $custom_field_name = $this->get_recipient_email_key( $product_id, $index );
 
                         if ( ! empty( $_POST[$custom_field_name] ) ) {
                             $order->update_meta_data( $custom_field_name, sanitize_text_field( $_POST[$custom_field_name] ) );
@@ -424,6 +415,10 @@ class PandamusRex_Memberships {
                 }
             }
         }
+    }
+
+    public function get_recipient_email_key( $product_id, $index ) {
+        return "pandamusrex_memberships_product_{$product_id}_recipient_$index";
     }
 }
 

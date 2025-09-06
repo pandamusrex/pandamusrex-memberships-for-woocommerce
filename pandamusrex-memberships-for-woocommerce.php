@@ -270,7 +270,7 @@ class PandamusRex_Memberships {
             );
             if ( $product && $product->exists() ) {
                 $product_class_name = get_class( $product );
-                if ( $product_class_name = 'WC_Product_Variation' ) {
+                if ( $product_class_name == 'WC_Product_Variation' ) {
                     wc_get_logger()->debug( "variable product detected" );
                     $product_id = $product->get_parent_id();
                 } else {
@@ -311,7 +311,7 @@ class PandamusRex_Memberships {
             );
             if ( $product && $product->exists() ) {
                 $product_class_name = get_class( $product );
-                if ( $product_class_name = 'WC_Product_Variation' ) {
+                if ( $product_class_name == 'WC_Product_Variation' ) {
                     $product_id = $product->get_parent_id();
                 } else {
                     $product_id = $product->get_id();
@@ -365,7 +365,7 @@ class PandamusRex_Memberships {
             );
             if ( $product && $product->exists() ) {
                 $product_class_name = get_class( $product );
-                if ( $product_class_name = 'WC_Product_Variation' ) {
+                if ( $product_class_name == 'WC_Product_Variation' ) {
                     $product_id = $product->get_parent_id();
                 } else {
                     $product_id = $product->get_id();
@@ -412,7 +412,7 @@ class PandamusRex_Memberships {
             $product = $order_item->get_product();
             if ( $product && $product->exists() ) {
                  $product_class_name = get_class( $product );
-                if ( $product_class_name = 'WC_Product_Variation' ) {
+                if ( $product_class_name == 'WC_Product_Variation' ) {
                     $product_id = $product->get_parent_id();
                 } else {
                     $product_id = $product->get_id();

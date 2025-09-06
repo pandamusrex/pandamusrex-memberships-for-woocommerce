@@ -269,6 +269,8 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() ) {
+                $product_class_name = get_class( $product );
+                wc_get_logger()->debug( "product class name: $product_class_name" );
                 if ( $product->is_type( 'variable' ) ) {
                     wc_get_logger()->debug( "variable product detected" );
                     $product_id = $product->get_parent_id();

@@ -259,7 +259,9 @@ class PandamusRex_Memberships {
 
         // First, see if we have any membership products before we output anything
         $show_div = false;
+        wc_get_logger()->debug( "in custom_checkout_fields" );
         foreach ( $cart as $cart_item_key => $cart_item ) {
+            wc_get_logger()->debug( "in custom_checkout_fields cart item key = $cart_item_key" );
             $product = apply_filters(
                 'woocommerce_cart_item_product',
                 $cart_item['data'],
@@ -267,9 +269,14 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() ) {
-                $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
+                $product_id = $product->get_id();
+                wc_get_logger()->debug( "in custom_checkout_fields product id = $product_id" );
+                $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
+                    wc_get_logger()->debug( "product includes membership" );
                     $show_div = true;
+                } else {
+                    wc_get_logger()->debug( "product DOES NOT include membership" );
                 }
             }
         }

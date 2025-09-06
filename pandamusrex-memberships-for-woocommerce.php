@@ -269,6 +269,13 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() ) {
+                if ( $product->is_type( 'variable' ) ) {
+                    wc_get_logger()->debug( "variable product detected" );
+                    $product_id = $product->get_parent_id();
+                } else {
+                    wc_get_logger()->debug( "simple product detected" );
+                    $product_id = $product->get_id();
+                }
                 $product_id = $product->get_id();
                 wc_get_logger()->debug( "in custom_checkout_fields product id = $product_id" );
                 $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );

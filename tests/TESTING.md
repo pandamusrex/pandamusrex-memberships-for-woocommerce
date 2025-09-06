@@ -2,6 +2,9 @@
 
 ## Basic Tests
 
+- [ ] Verify you can tick the "product includes membership" on a product and save it and it sticks
+- [ ] Verify you can untick the "product includes membership" on a product and save it and it sticks
+
 - [ ] Verify that when there are no memberships, the memberships list-all page shows that correctly.
 - [ ] Verify that you can add a membership accepting all the defaults.
 - [ ] Verify that you can edit that membership's product ID.

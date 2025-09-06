@@ -274,6 +274,9 @@ class PandamusRex_Memberships_Admin {
         );
         $loop_orders = wc_get_orders( $args );
         foreach ( $loop_orders as $loop_order ) {
+            if ( is_a( $loop_order, 'WC_Order_Refund' ) ) {
+                continue; // WC_Order_Refund doesn't implement get_customer_id();
+            }
             $loop_customer_id = $loop_order->get_customer_id();
             if ( $loop_customer_id ) {
                 $loop_order_id = $loop_order->get_id();

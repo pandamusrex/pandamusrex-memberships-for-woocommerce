@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PandamusRex Memberships for WooCommerce
- * Version: 1.2.4
+ * Version: 1.2.5
  * Plugin URI: https://github.com/pandamusrex/pandamusrex-memberships-for-woocommerce
  * Description: Buying this product gets you a membership!
  * Author: PandamusRex
@@ -209,55 +209,19 @@ class PandamusRex_Memberships {
     }
 
     public function woocommerce_order_status_changed( $order_id, $old_status, $new_status, $order ) {
-        // wc_get_logger()->debug( "in woocommerce_order_status_changed, new_status = $new_status" );
-
         if ( $new_status != "completed" ) {
             return;
         }
-
-        // wc_get_logger()->debug( "Order ID: $order_id" );
-
-        $buyer_user_id = $order->get_user_id();
-        if ( $buyer_user_id == 0 ) {
-            if ( function_exists( 'wc_get_logger' ) ) {
-                wc_get_logger()->debug( "Unexpectedly got guest buyer in payment complete for order $order_id" );
-            } else {
-                error_log( "Unexpectedly got guest buyer in payment complete for order $order_id" );
-            }
-            return;
-        }
-
-        // wc_get_logger()->debug( "User ID: $user_id" );
 
         $found_product_id = 0;
 
         foreach ( $order->get_items() as $item ) {
             $product_id = $item->get_product_id();
-            // wc_get_logger()->debug( "Examining product $product_id" );
 
             $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
             if ( $prod_incl_membership ) {
                 $quantity = $item->get_quantity();
-
-                // "First" item always goes to buyer
-                // Second or higher item (if present) goes to emails provided during checkout
-
-                // First, the buyer
-                $result = PandamusRex_Memberships_Db::addMembershipForUserThatStartsNow(
-                    $buyer_user_id,
-                    $product_id,
-                    $order_id,
-                    'Created for buyer automatically on payment complete'
-                );
-
-                if ( is_wp_error( $result ) ) {
-                    wc_get_logger()->debug( "Unable to add membership for user_id $buyer_user_id for order_id $order_id and product_id $product_id" );
-                }
-
-                // Now, anyone else
-                // e.g. if quantity = 3
-                // look in order meta for their emails
-                for ( $index = 2; $index <= $quantity; $index++ ) {
+                for ( $index = 1; $index <= $quantity; $index++ ) {
                     wc_get_logger()->debug( "--------------------------------------------------" );
                     wc_get_logger()->debug( "order_id: $order_id" );
 
@@ -293,8 +257,7 @@ class PandamusRex_Memberships {
     public function custom_checkout_fields( $checkout ) {
         $cart = WC()->cart->get_cart();
 
-        // First, see if we have any membership products with quantity > 1
-        // before we output anything
+        // First, see if we have any membership products before we output anything
         $show_div = false;
         foreach ( $cart as $cart_item_key => $cart_item ) {
             $product = apply_filters(
@@ -303,7 +266,7 @@ class PandamusRex_Memberships {
                 $cart_item,
                 $cart_item_key
             );
-            if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
+            if ( $product && $product->exists() ) {
                 $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
                     $show_div = true;
@@ -318,9 +281,11 @@ class PandamusRex_Memberships {
         echo '<div id="pandamusrex_memberships_recipients_fields">';
         echo '<h3>';
         echo esc_html__(
-            'You have multiple items with memberships in your cart. Please provide an email address for each recipient besides yourself',
+            'You have one or more items with a membership in your cart. Please provide an email address for each recipient',
             'pandamusrex-memberships');
         echo '</h3>';
+
+        $first_has_been_filled_in_with_buyer_email = false;
 
         foreach ( $cart as $cart_item_key => $cart_item ) {
             $product = apply_filters(
@@ -329,21 +294,35 @@ class PandamusRex_Memberships {
                 $cart_item,
                 $cart_item_key
             );
-            if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
+            if ( $product && $product->exists() ) {
                 $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
-                    for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
+                    for ( $index = 1; $index <= $cart_item['quantity']; $index++ ) {
                         $product_id = $product->get_id();
                         $product_name = $product->get_name();
+
                         $custom_field_name = $this->get_recipient_email_key( $product_id, $index );
                         $label = $product_name . " - Membership $index Recipient Email";
+                        $value = $checkout->get_value( $custom_field_name );
+                        if ( empty( $value ) ) {
+                            if ( ! $first_has_been_filled_in_with_buyer_email ) {
+                                $current_user = wp_get_current_user();
+                                if ( $current_user instanceof WP_User ) {
+                                    $value = $current_user->user_email;
+                                    $first_has_been_filled_in_with_buyer_email = true;
+                                }
+                            }
+                        }
+
                         woocommerce_form_field( $custom_field_name, array(
                             'type'        => 'email',
                             'required'    => true,
                             'class'       => array('pandamusrex_membership_checkout_recipient form-row-wide'),
                             'label'       => $label,
                             'placeholder' => __( '' ),
-                        ), $checkout->get_value( $custom_field_name ) );
+                            ),
+                            $value
+                        );
                     }
                 }
             }
@@ -364,10 +343,10 @@ class PandamusRex_Memberships {
                 $cart_item,
                 $cart_item_key
             );
-            if ( $product && $product->exists() && $cart_item['quantity'] > 1 ) {
+            if ( $product && $product->exists() ) {
                 $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
-                    for ( $index = 2; $index <= $cart_item['quantity']; $index++ ) {
+                    for ( $index = 1; $index <= $cart_item['quantity']; $index++ ) {
                         $product_id = $product->get_id();
                         $custom_field_name = $this->get_recipient_email_key( $product_id, $index );
 
@@ -406,10 +385,10 @@ class PandamusRex_Memberships {
         // TODO DRY this (duplicate code from woocommerce_order_status_changed)
         foreach ( $order->get_items() as $order_item ) {
             $product = $order_item->get_product();
-            if ( $product && $product->exists() && $order_item['quantity'] > 1 ) {
+            if ( $product && $product->exists() ) {
                 $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
-                    for ( $index = 2; $index <= $order_item['quantity']; $index++ ) {
+                    for ( $index = 1; $index <= $order_item['quantity']; $index++ ) {
                         $product_id = $product->get_id();
                         $custom_field_name = $this->get_recipient_email_key( $product_id, $index );
 

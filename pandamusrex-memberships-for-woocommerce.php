@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PandamusRex Memberships for WooCommerce
- * Version: 1.2.5
+ * Version: 1.2.6
  * Plugin URI: https://github.com/pandamusrex/pandamusrex-memberships-for-woocommerce
  * Description: Buying this product gets you a membership!
  * Author: PandamusRex
@@ -270,8 +270,7 @@ class PandamusRex_Memberships {
             );
             if ( $product && $product->exists() ) {
                 $product_class_name = get_class( $product );
-                wc_get_logger()->debug( "product class name: $product_class_name" );
-                if ( $product->is_type( 'variable' ) ) {
+                if ( $product_class_name = 'WC_Product_Variation' ) {
                     wc_get_logger()->debug( "variable product detected" );
                     $product_id = $product->get_parent_id();
                 } else {
@@ -311,10 +310,15 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() ) {
-                $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
+                $product_class_name = get_class( $product );
+                if ( $product_class_name = 'WC_Product_Variation' ) {
+                    $product_id = $product->get_parent_id();
+                } else {
+                    $product_id = $product->get_id();
+                }
+                $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
                     for ( $index = 1; $index <= $cart_item['quantity']; $index++ ) {
-                        $product_id = $product->get_id();
                         $product_name = $product->get_name();
 
                         $custom_field_name = $this->get_recipient_email_key( $product_id, $index );
@@ -360,10 +364,15 @@ class PandamusRex_Memberships {
                 $cart_item_key
             );
             if ( $product && $product->exists() ) {
-                $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
+                $product_class_name = get_class( $product );
+                if ( $product_class_name = 'WC_Product_Variation' ) {
+                    $product_id = $product->get_parent_id();
+                } else {
+                    $product_id = $product->get_id();
+                }
+                $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
                     for ( $index = 1; $index <= $cart_item['quantity']; $index++ ) {
-                        $product_id = $product->get_id();
                         $custom_field_name = $this->get_recipient_email_key( $product_id, $index );
 
                         if ( ! isset( $_POST[$custom_field_name] ) ) {
@@ -402,10 +411,15 @@ class PandamusRex_Memberships {
         foreach ( $order->get_items() as $order_item ) {
             $product = $order_item->get_product();
             if ( $product && $product->exists() ) {
-                $prod_incl_membership = get_post_meta( $product->get_id(), '_pandamusrex_prod_incl_membership', false );
+                 $product_class_name = get_class( $product );
+                if ( $product_class_name = 'WC_Product_Variation' ) {
+                    $product_id = $product->get_parent_id();
+                } else {
+                    $product_id = $product->get_id();
+                }
+                $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {
                     for ( $index = 1; $index <= $order_item['quantity']; $index++ ) {
-                        $product_id = $product->get_id();
                         $custom_field_name = $this->get_recipient_email_key( $product_id, $index );
 
                         if ( ! empty( $_POST[$custom_field_name] ) ) {

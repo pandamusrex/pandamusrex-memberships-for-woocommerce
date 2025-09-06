@@ -4,7 +4,7 @@ Donate link: https://pandamusrex.com/
 Tags: woocommerce
 Requires at least: 6.4
 Tested up to: 6.8
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 Requires PHP: 7.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -22,6 +22,9 @@ Buying this product gets you a membership!
 Yes!
 
 == Changelog ==
+
+= 1.2.6 =
+* Properly handle variable products
 
 = 1.2.5 =
 * Instead of assuming buyer always gets first item, get an email address for each membership product in the cart, prefilling buyer on the first one. Makes variations work better.

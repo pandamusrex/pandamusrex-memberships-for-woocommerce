@@ -259,6 +259,7 @@ class PandamusRex_Memberships {
 
         // First, see if we have any membership products before we output anything
         $show_div = false;
+        wc_get_logger()->debug( "**********************************************" );
         wc_get_logger()->debug( "in custom_checkout_fields" );
         foreach ( $cart as $cart_item_key => $cart_item ) {
             wc_get_logger()->debug( "in custom_checkout_fields cart item key = $cart_item_key" );
@@ -277,7 +278,6 @@ class PandamusRex_Memberships {
                     wc_get_logger()->debug( "simple product detected" );
                     $product_id = $product->get_id();
                 }
-                $product_id = $product->get_id();
                 wc_get_logger()->debug( "in custom_checkout_fields product id = $product_id" );
                 $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
                 if ( $prod_incl_membership ) {

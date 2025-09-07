@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PandamusRex Memberships for WooCommerce
- * Version: 1.2.6
+ * Version: 1.3.0
  * Plugin URI: https://github.com/pandamusrex/pandamusrex-memberships-for-woocommerce
  * Description: Buying this product gets you a membership!
  * Author: PandamusRex
@@ -57,6 +57,8 @@ class PandamusRex_Memberships {
         add_action( 'woocommerce_before_order_notes', [ $this, 'custom_checkout_fields' ] );
         add_action( 'woocommerce_checkout_process', [ $this, 'validate_custom_checkout_fields' ] );
         add_action( 'woocommerce_checkout_update_order_meta', [ $this, 'custom_checkout_fields_update_order_meta' ] );
+
+        add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
     }
 
     public function add_meta_box() {
@@ -434,6 +436,13 @@ class PandamusRex_Memberships {
 
     public function get_recipient_email_key( $product_id, $index ) {
         return "pandamusrex_memberships_product_{$product_id}_recipient_$index";
+    }
+
+    public function enqueue_scripts() {
+        wp_enqueue_style(
+            'pandamusrex-membership-styles',
+            plugin_dir_url( __FILE__ ) . 'css/styles.css'
+        );
     }
 }
 

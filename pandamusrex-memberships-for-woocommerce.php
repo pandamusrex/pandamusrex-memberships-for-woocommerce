@@ -215,19 +215,27 @@ class PandamusRex_Memberships {
             return;
         }
 
-        $found_product_id = 0;
+        foreach ( $order->get_items( 'line_item' ) as $item ) { // Get only WC_Order_Item_Product
+            $product_item = $item->get_product();
+            $product_item_id = $item->get_product_id();
 
-        foreach ( $order->get_items() as $item ) {
-            $product_id = $item->get_product_id();
+            $product_item_class_name = get_class( $product_item );
+            if ( $product_item_class_name == 'WC_Product_Variation' ) {
+                wc_get_logger()->debug( "variable product detected" );
+                $parent_product_id = $product_item->get_parent_id();
+                $prod_item_incl_membership = get_post_meta( $parent_product_id, '_pandamusrex_prod_incl_membership', false );
+            } else {
+                wc_get_logger()->debug( "simple product detected" );
+                $prod_item_incl_membership = get_post_meta( $product_item_id, '_pandamusrex_prod_incl_membership', false );
+            }
 
-            $prod_incl_membership = get_post_meta( $product_id, '_pandamusrex_prod_incl_membership', false );
-            if ( $prod_incl_membership ) {
-                $quantity = $item->get_quantity();
+            if ( $prod_item_incl_membership ) {
+                $quantity = $product_item->get_quantity();
                 for ( $index = 1; $index <= $quantity; $index++ ) {
                     wc_get_logger()->debug( "--------------------------------------------------" );
                     wc_get_logger()->debug( "order_id: $order_id" );
 
-                    $meta_key = $this->get_recipient_email_key( $product_id, $index );
+                    $meta_key = $this->get_recipient_email_key( $product_item_id, $index );
                     wc_get_logger()->debug( "recipient_email_key: $meta_key" );
 
                     // Find or create the user based on the order meta
@@ -237,13 +245,13 @@ class PandamusRex_Memberships {
                     if ( is_email( $recipient_email ) ) {
                         $user_id = PandamusRex_Memberships_User_Helper::find_or_create_user( $recipient_email );
                     } else {
-                        wc_get_logger()->debug( "Unable to create user for recipient $index for product_id $product_id for order_id $order_id - invalid email $recipient_email" );
+                        wc_get_logger()->debug( "Unable to create user for recipient $index for product_item_id $product_item_id for order_id $order_id - invalid email $recipient_email" );
                         continue; // don't attempt to add membership - it can be created manually later
                     }
 
                     $result = PandamusRex_Memberships_Db::addMembershipForUserThatStartsNow(
                         $user_id,
-                        $product_id,
+                        $product_item_id,
                         $order_id,
                         'Created for recipient automatically on payment complete'
                     );

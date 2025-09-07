@@ -220,10 +220,10 @@ class PandamusRex_Memberships {
 
         foreach ( $order->get_items( 'line_item' ) as $item ) { // Get only WC_Order_Item_Product
             $product_item = $item->get_product();
-            if ( $item->is_type( 'variation' ) ) {
-                // Oddly, WooCommerce sends the parent product ID in get_items items
-                // So, use it to get parent product membership product status and then
-                // get the actual product id for the variation
+            $product_item_variation_id = $item->get_variation_id();
+            wc_get_logger()->debug( "product_item_variation_id: $product_item_variation_id" );
+
+            if ( $product_item_variation_id > 0 ) {
                 wc_get_logger()->debug( "variation product detected" );
                 $parent_product_item_id = $item->get_product_id();
                 wc_get_logger()->debug( "parent product ID: $parent_product_item_id" );

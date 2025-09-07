@@ -230,7 +230,7 @@ class PandamusRex_Memberships {
             }
 
             if ( $prod_item_incl_membership ) {
-                $quantity = $product_item->get_quantity();
+                $quantity = $item->get_quantity();
                 for ( $index = 1; $index <= $quantity; $index++ ) {
                     wc_get_logger()->debug( "--------------------------------------------------" );
                     wc_get_logger()->debug( "order_id: $order_id" );

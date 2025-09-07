@@ -215,24 +215,32 @@ class PandamusRex_Memberships {
             return;
         }
 
+        wc_get_logger()->debug( "--------------------------------------------------" );
+        wc_get_logger()->debug( "in woocommerce_order_status_changed" );
+
         foreach ( $order->get_items( 'line_item' ) as $item ) { // Get only WC_Order_Item_Product
             $product_item = $item->get_product();
-            $product_item_id = $item->get_product_id();
-
-            $product_item_class_name = get_class( $product_item );
-            if ( $product_item_class_name == 'WC_Product_Variation' ) {
+            if ( $item->is_type( 'variable' ) ) {
+                // Oddly, WooCommerce sends the parent product ID in get_items items
+                // So, use it to get parent product membership product status and then
+                // get the actual product id for the variation
                 wc_get_logger()->debug( "variable product detected" );
-                $parent_product_id = $product_item->get_parent_id();
-                $prod_item_incl_membership = get_post_meta( $parent_product_id, '_pandamusrex_prod_incl_membership', false );
+                $parent_product_item_id = $item->get_product_id();
+                wc_get_logger()->debug( "parent product ID: $parent_product_item_id" );
+                $prod_item_incl_membership = get_post_meta( $parent_product_item_id, '_pandamusrex_prod_incl_membership', false );
+                $product_item_id = $item->get_variation_id();
+                wc_get_logger()->debug( "variation product ID: $product_item_id" );
             } else {
+                // For simple products, we can just use the ID as is
                 wc_get_logger()->debug( "simple product detected" );
+                $product_item_id = $item->get_product_id();
+                wc_get_logger()->debug( "simple product ID: $product_item_id" );
                 $prod_item_incl_membership = get_post_meta( $product_item_id, '_pandamusrex_prod_incl_membership', false );
             }
 
             if ( $prod_item_incl_membership ) {
                 $quantity = $item->get_quantity();
                 for ( $index = 1; $index <= $quantity; $index++ ) {
-                    wc_get_logger()->debug( "--------------------------------------------------" );
                     wc_get_logger()->debug( "order_id: $order_id" );
 
                     $meta_key = $this->get_recipient_email_key( $product_item_id, $index );

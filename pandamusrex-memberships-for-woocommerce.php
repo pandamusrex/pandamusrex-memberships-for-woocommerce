@@ -28,6 +28,7 @@ require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-user
 require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-db.php' );
 register_activation_hook( __FILE__, [ 'PandamusRex_Memberships_Db', 'create_tables' ] );
 require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-admin.php' );
+require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-membership-form.php' );
 
 class PandamusRex_Memberships {
     private static $instance;
@@ -198,6 +199,8 @@ class PandamusRex_Memberships {
             }
 
             echo '</table>';
+
+            PandamusRex_Memberships_Membership_Form::render_membership_form_for_my_account();
         }
     }
 
@@ -462,6 +465,14 @@ class PandamusRex_Memberships {
         wp_enqueue_style(
             'pandamusrex-membership-styles',
             plugin_dir_url( __FILE__ ) . 'css/styles.css'
+        );
+
+        wp_enqueue_script(
+            'pandamusrex-memberships-my-account-form',
+            plugin_dir_url( __FILE__ ) . 'js/pandamusrex-memberships-membership-form.js',
+            ['jquery'],
+            '1.0.0',
+            false
         );
     }
 }

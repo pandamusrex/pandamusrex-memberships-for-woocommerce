@@ -209,87 +209,103 @@ class PandamusRex_Memberships_Membership_Form {
             ]
         ];
 
-        // TODO CHECK FOR FORM SUBMITTAL REQUEST AND PROCESS IT
+        $current_user_id = get_current_user_id();
 
-        echo "<form>";
-
-        foreach ($form_elements as $element) {
-            if (! is_array( $element)) {
-                echo "<p>Error: Form element must be an array.</p>";
-            } elseif (! array_key_exists( 'type', $element )) {
-                echo "<p>Error: Form element array must contain type key.</p>";
-            } else {
-                $type = $element['type'];
-                if ($type == 'heading') {
-                    $text = $element['text'];
-                    echo "<h2>";
-                    echo esc_html($text);
-                    echo "</h2>";
-                    continue;
-                }
-
-                if ($type == 'bodytext') {
-                    $text = $element['text'];
-                    if (! is_array( $text )) {
-                        echo "<p>";
-                        echo esc_html($text);
-                        echo "</p>";
-                    } else {
-                        foreach ($text as $line) {
-                            echo "<p>";
-                            echo esc_html($line);
-                            echo "</p>";
+        //Check for form posting and process it
+        if ( isset ( $_POST['pandamusrex_memberships_member_form_nonce'] ) ) {
+            $nonce = sanitize_text_field( wp_unslash( $_POST['pandamusrex_memberships_member_form_nonce'] ) );
+            if ( wp_verify_nonce( $nonce, 'pandamusrex_memberships_member_form_nonce' ) ) {
+                foreach ( $form_elements as $element ) {
+                    if ( array_key_exists( 'user_meta_key', $element ) ) {
+                        $key = $element[ 'user_meta_key' ];
+                        if ( array_key_exists( $key, $_POST ) ) {
+                            $new_value = sanitize_text_field( $_POST[ $key ] );
+                            update_user_meta( $current_user_id, $key, $new_value );
                         }
                     }
-                    continue;
                 }
 
-                if ($type == 'checkbox') {
-                    $text = $element['text'];
-                    $key = $element['user_meta_key'];
-                    $required = array_key_exists('required', $element);
-                    $checked = empty( get_user_meta( get_current_user_id(), $key, TRUE ) ) ? 'CHECKED' : '';
-                    echo "<p>";
-                    echo "<input type='checkbox' id='" . esc_attr( $key ) . "' value='". esc_attr($text) ."' " . esc_attr($checked) . ">";
-                    echo "<label for='" . esc_attr( $key ) . "'>" . esc_html($text) . "</label>";
-                    if ( $required ) {
-                        echo "<font color='red'>*</font>";
-                    }
-                    echo "</p>";
-                    continue;
-                }
+                echo "<p>";
+                echo "Membership form changes applied successfully";
+                echo "</p>";
+            }
+        } 
 
-                if ($type == 'text') {
-                    $label = $element['label'];
-                    $key = $element['user_meta_key'];
-                    $required = array_key_exists('required', $element);
-                    $initial_value = get_user_meta( get_current_user_id(), $key, TRUE );
-                    echo "<p>";
-                    echo "<label for='" . esc_attr( $key ) . "'>" . esc_html($label) . "</label>";
-                    if ( $required ) {
-                        echo "<font color='red'>*</font>";
-                    }
-                    echo "<br/>";
-                    echo "<input type='text' id='" . esc_attr( $key ) . "' name='" . esc_attr( $key ) . "'value='". esc_attr($initial_value) ."'>";
-                    echo "</p>";
-                    continue;
-                }
+        echo "<form method='post'>";
 
-                if ($type == 'email') {
-                    $label = $element['label'];
-                    $key = $element['user_meta_key'];
-                    $required = array_key_exists('required', $element);
-                    $initial_value = get_user_meta( get_current_user_id(), $key, TRUE );
+        echo '<input type="hidden" name="pandamusrex_memberships_member_form_nonce" id="pandamusrex_memberships_member_form_nonce" value="' . esc_attr( wp_create_nonce( 'pandamusrex_memberships_member_form_nonce' ) ) . '" />';
+
+        foreach ($form_elements as $element) {
+            $type = $element['type'];
+            if ($type == 'heading') {
+                $text = $element['text'];
+                echo "<h2>";
+                echo esc_html($text);
+                echo "</h2>";
+                continue;
+            }
+
+            if ($type == 'bodytext') {
+                $text = $element['text'];
+                if (! is_array( $text )) {
                     echo "<p>";
-                    echo "<label for='" . esc_attr( $key ) . "'>" . esc_html($label) . "</label>";
-                    if ( $required ) {
-                        echo "<font color='red'>*</font>";
-                    }
-                    echo "<br/>";
-                    echo "<input type='text' id='" . esc_attr( $key ) . "' name='" . esc_attr( $key ) . "'value='". esc_attr($initial_value) ."'>";
+                    echo esc_html($text);
                     echo "</p>";
-                    continue;
+                } else {
+                    foreach ($text as $line) {
+                        echo "<p>";
+                        echo esc_html($line);
+                        echo "</p>";
+                    }
                 }
+                continue;
+            }
+
+            if ($type == 'checkbox') {
+                $text = $element['text'];
+                $key = $element['user_meta_key'];
+                $required = array_key_exists('required', $element);
+                $checked = empty( get_user_meta( $current_user_id, $key, TRUE ) ) ? 'CHECKED' : '';
+                echo "<p>";
+                echo "<input type='checkbox' id='" . esc_attr( $key ) . "' value='". esc_attr($text) ."' " . esc_attr($checked) . ">";
+                echo "<label for='" . esc_attr( $key ) . "'>" . esc_html($text) . "</label>";
+                if ( $required ) {
+                    echo "<font color='red'>*</font>";
+                }
+                echo "</p>";
+                continue;
+            }
+
+            if ($type == 'text') {
+                $label = $element['label'];
+                $key = $element['user_meta_key'];
+                $required = array_key_exists('required', $element);
+                $initial_value = get_user_meta( $current_user_id, $key, TRUE );
+                echo "<p>";
+                echo "<label for='" . esc_attr( $key ) . "'>" . esc_html($label) . "</label>";
+                if ( $required ) {
+                    echo "<font color='red'>*</font>";
+                }
+                echo "<br/>";
+                echo "<input type='text' id='" . esc_attr( $key ) . "' name='" . esc_attr( $key ) . "'value='". esc_attr($initial_value) ."'>";
+                echo "</p>";
+                continue;
+            }
+
+            if ($type == 'email') {
+                $label = $element['label'];
+                $key = $element['user_meta_key'];
+                $required = array_key_exists('required', $element);
+                $initial_value = get_user_meta( $current_user_id, $key, TRUE );
+                echo "<p>";
+                echo "<label for='" . esc_attr( $key ) . "'>" . esc_html($label) . "</label>";
+                if ( $required ) {
+                    echo "<font color='red'>*</font>";
+                }
+                echo "<br/>";
+                echo "<input type='text' id='" . esc_attr( $key ) . "' name='" . esc_attr( $key ) . "'value='". esc_attr($initial_value) ."'>";
+                echo "</p>";
+                continue;
             }
         }
 

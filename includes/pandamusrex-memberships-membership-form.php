@@ -220,7 +220,25 @@ class PandamusRex_Memberships_Membership_Form {
                         $key = $element[ 'user_meta_key' ];
                         if ( array_key_exists( $key, $_POST ) ) {
                             $new_value = sanitize_text_field( $_POST[ $key ] );
+
+                            // Checkbox? Store TRUE instead
+                            $type = $element['type'];
+                            if ( $type == 'checkbox' ) {
+                                $new_value = 'TRUE';
+                            }
+
                             update_user_meta( $current_user_id, $key, $new_value );
+                            echo "<!-- ";
+                            echo $key;
+                            echo " ";
+                            echo $new_value;
+                            echo "-->";
+                        } else {
+                            // Not present? Checkbox? Delete the meta value
+                            $type  = $element['type'];
+                            if ( $type == 'checkbox' ) {
+                                delete_user_meta( $current_user_id, $key );
+                            }
                         }
                     }
                 }
@@ -265,9 +283,9 @@ class PandamusRex_Memberships_Membership_Form {
                 $text = $element['text'];
                 $key = $element['user_meta_key'];
                 $required = array_key_exists('required', $element);
-                $checked = empty( get_user_meta( $current_user_id, $key, TRUE ) ) ? 'CHECKED' : '';
+                $checked = empty( get_user_meta( $current_user_id, $key, TRUE ) ) ? '' : 'CHECKED';
                 echo "<p>";
-                echo "<input type='checkbox' id='" . esc_attr( $key ) . "' value='". esc_attr($text) ."' " . esc_attr($checked) . ">";
+                echo "<input type='checkbox' id='" . esc_attr( $key ) . "' name='" . esc_attr( $key ) . "'value='". esc_attr($text) ."' " . esc_attr($checked) . ">";
                 echo "<label for='" . esc_attr( $key ) . "'>" . esc_html($text) . "</label>";
                 if ( $required ) {
                     echo "<font color='red'>*</font>";
@@ -304,6 +322,27 @@ class PandamusRex_Memberships_Membership_Form {
                 }
                 echo "<br/>";
                 echo "<input type='text' id='" . esc_attr( $key ) . "' name='" . esc_attr( $key ) . "'value='". esc_attr($initial_value) ."'>";
+                echo "</p>";
+                continue;
+            }
+
+            if ( $type == 'radiobutton' ) {
+                $label = $element['label'];
+                echo "<p>";
+                echo "<label for='" . esc_attr( $key ) . "'>" . esc_html($label) . "</label>";
+                echo "<br/>";
+                $values = $element['values'];
+                $current_value = get_user_meta( $current_user_id, $key, TRUE );
+                if ( empty( $current_value ) ) {
+                    $current_value = $values[0];
+                }
+                foreach ($values as $value) {
+                    $checked = ( $current_value == $value ) ? 'CHECKED' : '';
+                    echo "<input type='radio' name='" . esc_attr( $key ) . "'value='". esc_attr($value) ."' " . esc_attr($checked) . ">";
+                    echo "<label for='" . esc_attr( $key ) . "'>";
+                    echo esc_html($value);
+                    echo "</label><br/>";
+                }
                 echo "</p>";
                 continue;
             }

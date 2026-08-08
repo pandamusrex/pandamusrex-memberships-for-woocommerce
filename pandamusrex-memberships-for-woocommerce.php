@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PandamusRex Memberships for WooCommerce
- * Version: 1.4.0
+ * Version: 1.4.1
  * Plugin URI: https://github.com/pandamusrex/pandamusrex-memberships-for-woocommerce
  * Description: Buying this product gets you a membership!
  * Author: PandamusRex
@@ -378,8 +378,10 @@ class PandamusRex_Memberships {
     public function validate_custom_checkout_fields() {
         $all_emails_required_have_been_provided = true;
 
+        $cart = WC()->cart->get_cart();
+
         // TODO DRY this (duplicate code from woocommerce_order_status_changed)
-        foreach ( WC()->cart->get_cart() as $cart_item ) {
+        foreach ( $cart as $cart_item_key => $cart_item) {
             $product = apply_filters(
                 'woocommerce_cart_item_product',
                 $cart_item['data'],

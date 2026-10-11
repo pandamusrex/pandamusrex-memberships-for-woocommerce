@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PandamusRex Memberships for WooCommerce
- * Version: 1.4.1
+ * Version: 2.0.0
  * Plugin URI: https://github.com/pandamusrex/pandamusrex-memberships-for-woocommerce
  * Description: Buying this product gets you a membership!
  * Author: PandamusRex
@@ -28,6 +28,7 @@ require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-user
 require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-db.php' );
 register_activation_hook( __FILE__, [ 'PandamusRex_Memberships_Db', 'create_tables' ] );
 require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-admin.php' );
+require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-products-admin.php' );
 require_once( plugin_dir_path(__FILE__) . 'includes/pandamusrex-memberships-membership-form.php' );
 
 class PandamusRex_Memberships {
@@ -60,6 +61,7 @@ class PandamusRex_Memberships {
         add_action( 'woocommerce_checkout_update_order_meta', [ $this, 'custom_checkout_fields_update_order_meta' ] );
 
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+        add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ] );
     }
 
     public function add_meta_box() {
@@ -473,7 +475,17 @@ class PandamusRex_Memberships {
             'pandamusrex-memberships-my-account-form',
             plugin_dir_url( __FILE__ ) . 'js/pandamusrex-memberships-membership-form.js',
             ['jquery'],
-            '1.0.0',
+            '2.0.0',
+            false
+        );
+    }
+
+    public function admin_enqueue_scripts() {
+        wp_enqueue_script(
+            'pandamusrex-memberships-admin-helper',
+            plugin_dir_url( __FILE__ ) . 'js/pandamusrex-memberships-admin.js',
+            ['jquery', 'wp-api'],
+            '2.0.0',
             false
         );
     }

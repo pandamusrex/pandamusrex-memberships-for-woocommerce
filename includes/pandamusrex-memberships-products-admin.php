@@ -115,32 +115,35 @@ class PandamusRex_Memberships_Products_Admin {
         // First, get all completed orders
         // (Unfortunately you cannot query on product_ids)
 
-        $order_ids = $orders = wc_get_orders(
+        $order_ids = wc_get_orders(
             [
                 'limit'  => -1,
-                'status' => 'completed',
-                'order'  => 'DESC',
                 'return' => 'ids',
+                'status' => 'completed'
             ]
         );
 
         // Look in each order for our product_id or its variations
-        $order_ids_with_product = [];
+        $order_buyer_map = [];
 
         foreach ($order_ids as $order_id) {
             $order = wc_get_order($order_id);
+            $buyer_last_name = $order->get_billing_last_name();
             foreach ( $order->get_items() as $item_id => $item ) {
                 $found_product_id = $item->get_product_id();
                 $found_variation_id = $item->get_variation_id();
 
                 if ($found_product_id == $product_id) {
-                    $order_ids_with_product[] = $order_id;
+                    $order_buyer_map[$order_id] = $buyer_last_name;
                 }
             }
         }
 
-        $order_ids_with_product = array_unique($order_ids_with_product);
-        return $order_ids_with_product;
+        // sort the order buyer map by buyer last name
+        asort($order_buyer_map);
+
+        // return just the order ids (the keys) from the sorted map
+        return array_keys($order_buyer_map);
     }
 
     public function show_single_product_details() {
@@ -188,10 +191,10 @@ class PandamusRex_Memberships_Products_Admin {
         echo '<table class="wp-list-table widefat fixed striped table-view-list">';
         echo '<tr>';
         echo '<th>';
-        echo esc_html__( 'Order ID', 'pandamusrex-memberships' );
+        echo esc_html__( 'Buyer (Last Name, First Name)', 'pandamusrex-memberships' );
         echo '</th>';
         echo '<th>';
-        echo esc_html__( 'Buyer', 'pandamusrex-memberships' );
+        echo esc_html__( 'Order ID', 'pandamusrex-memberships' );
         echo '</th>';
         echo '<th>';
         echo esc_html__( 'Recipient(s) and Product/Variation(s)', 'pandamusrex-memberships' );
@@ -244,7 +247,8 @@ class PandamusRex_Memberships_Products_Admin {
         $order = wc_get_order($order_id);
         $order_url = get_edit_post_link($order_id);
         $buyer_email = $order->get_billing_email();
-        $printed_order_details_already = false;
+        $buyer_first_name = $order->get_billing_first_name();
+        $buyer_last_name = $order->get_billing_last_name();
 
         foreach ( $order->get_items() as $item_id => $item ) {
             $product = $item->get_product();
@@ -262,16 +266,11 @@ class PandamusRex_Memberships_Products_Admin {
             for ($num = 1; $num <= $quantity; $num++) {
                 echo "<tr>";
                 echo "<td>";
-                if (! $printed_order_details_already) {
-                    echo "<a href='" . esc_url($order_url) . "'>" . $order_id . "</a>";
-                }
+                $this->emit_billing_name_for_order($buyer_first_name, $buyer_last_name);
                 echo "</td>";
                 echo "<td>";
-                if (! $printed_order_details_already) {
-                    $this->emit_personal_info_for_email($buyer_email);
-                }
+                echo "<a href='" . esc_url($order_url) . "'>" . $order_id . "</a>";
                 echo "</td>";
-                $printed_order_details_already = true;
 
                 $meta_key = 'pandamusrex_memberships_product_' . $product_id . '_recipient_' . $num;
                 $recipient_email = $order->get_meta($meta_key);
@@ -315,6 +314,34 @@ class PandamusRex_Memberships_Products_Admin {
                 }
                 echo "</td>";
                 echo "</tr>";
+            }
+        }
+    }
+
+    public function emit_billing_name_for_order($first_name, $last_name) {
+        if (! empty($first_name)) {
+            if (! empty($last_name)) { // We have a first and a last name for the buyer
+                echo "<b>";
+                echo esc_attr($last_name);
+                echo ", ";
+                echo esc_attr($first_name);
+                echo "</b>";
+                echo "<br/>";
+                echo "<br/>";
+            } else { // We have just a first name for the buyer
+                echo "<b>";
+                echo esc_attr($first_name);
+                echo "</b>";
+                echo "<br/>";
+                echo "<br/>";
+            }
+        } else {
+            if (! empty($last_name)) { // We have just a last name for the buyer
+                echo "<b>";
+                echo esc_attr($last_name);
+                echo "</b>";
+                echo "<br/>";
+                echo "<br/>";
             }
         }
     }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PandamusRex Memberships for WooCommerce
- * Version: 2.0.0
+ * Version: 2.1.0
  * Plugin URI: https://github.com/pandamusrex/pandamusrex-memberships-for-woocommerce
  * Description: Buying this product gets you a membership!
  * Author: PandamusRex
@@ -475,7 +475,7 @@ class PandamusRex_Memberships {
             'pandamusrex-memberships-my-account-form',
             plugin_dir_url( __FILE__ ) . 'js/pandamusrex-memberships-membership-form.js',
             ['jquery'],
-            '2.0.0',
+            '2.1.0',
             false
         );
     }
@@ -485,7 +485,7 @@ class PandamusRex_Memberships {
             'pandamusrex-memberships-admin-helper',
             plugin_dir_url( __FILE__ ) . 'js/pandamusrex-memberships-admin.js',
             ['jquery', 'wp-api'],
-            '2.0.0',
+            '2.1.0',
             false
         );
     }
